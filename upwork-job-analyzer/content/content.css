@@ -1,0 +1,110 @@
+.uja-overlay {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999999;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  padding: 8px 16px 8px 8px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  animation: uja-slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.uja-overlay:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
+}
+
+.uja-overlay.uja-minimized {
+  padding: 8px;
+  border-radius: 50%;
+}
+
+.uja-overlay.uja-minimized .uja-details {
+  display: none;
+}
+
+.uja-overlay-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.uja-score-ring-container {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uja-score-ring {
+  width: 100%;
+  height: 100%;
+}
+
+.uja-score-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 3.8;
+}
+
+.uja-score-path {
+  fill: none;
+  stroke: var(--score-color, #14a800);
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  animation: uja-progress 1s ease-out forwards;
+}
+
+.uja-score-value {
+  position: absolute;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+}
+
+.uja-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-right: 8px;
+}
+
+.uja-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--score-color, #14a800);
+}
+
+.uja-flags-badge {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.uja-flags-badge.uja-safe {
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+}
+
+@keyframes uja-slideUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes uja-progress {
+  from { stroke-dasharray: 0, 100; }
+}

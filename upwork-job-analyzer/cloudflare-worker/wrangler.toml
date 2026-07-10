@@ -1,0 +1,6 @@
+name = "uja-license-validator"
+main = "index.js"
+compatibility_date = "2023-10-30"
+
+# Note: Set your actual LEMON_SQUEEZY_SIGNING_SECRET via Cloudflare Dashboard or Wrangler CLI
+# e.g., `npx wrangler secret put LEMON_SQUEEZY_SIGNING_SECRET`

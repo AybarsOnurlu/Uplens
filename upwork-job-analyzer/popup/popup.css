@@ -1,0 +1,113 @@
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.3);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.5);
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.5);
+}
+
+/* Base utilities */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Base input fixes (in case Tailwind didn't generate bg-slate-800/50) */
+input, select {
+  background-color: rgba(30, 41, 59, 0.5); /* bg-slate-800/50 */
+  color: #f8fafc;
+  border-color: #334155; /* border-slate-700 */
+}
+input::placeholder {
+  color: #64748b; /* text-slate-500 */
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Tab buttons */
+.tab-btn {
+  color: #94a3b8; /* slate-400 */
+}
+
+.tab-btn:hover {
+  color: #cbd5e1; /* slate-300 */
+}
+
+.light .tab-btn {
+  color: #64748b; /* slate-500 */
+}
+
+.light .tab-btn:hover {
+  color: #475569; /* slate-600 */
+}
+
+/* Cards */
+.analysis-card {
+  background: rgba(30, 41, 59, 0.4);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+.light .analysis-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Light Theme Overrides */
+.light .bg-slate-900 { background-color: #f8fafc; }
+.light .text-slate-200 { color: #1e293b; }
+.light .text-slate-300 { color: #334155; }
+.light .text-slate-400 { color: #475569; }
+.light .text-slate-500 { color: #64748b; }
+.light .text-white { color: #0f172a; }
+.light .bg-slate-800\/50 { background-color: #ffffff; border-color: #e2e8f0; }
+.light .bg-slate-800\/40 { background-color: #f1f5f9; border-color: #e2e8f0; }
+.light .border-slate-700 { border-color: #cbd5e1; }
+.light .border-slate-700\/50 { border-color: #e2e8f0; }
+.light .border-slate-700\/30 { border-color: #f1f5f9; }
+.light .bg-slate-700 { background-color: #e2e8f0; color: #334155; }
+
+/* Input fields fix for light mode (ensure they don't look broken) */
+.light input, .light select {
+  background-color: #ffffff;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.light input::placeholder {
+  color: #94a3b8;
+}
+
+/* Active Tab Distinctiveness */
+.tab-btn.active {
+  background-color: rgba(34, 197, 94, 0.05); /* very faint green */
+  font-weight: 700;
+}
+.light .tab-btn.active {
+  background-color: rgba(34, 197, 94, 0.1);
+}
+#tab-indicator {
+  height: 3px; /* make it slightly thicker */
+  box-shadow: 0 -2px 10px rgba(34, 197, 94, 0.5);
+}
