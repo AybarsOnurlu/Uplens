@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/store_icon.png" width="80" alt="UpLens Logo">
+  <img src="assets/uplens_logo.png" width="80" alt="UpLens Logo">
   <h1>UpLens</h1>
   <p><strong>The Smart, AI-Powered Job Analyzer for Upwork Freelancers</strong></p>
   <img src="assets/store_banner.png" alt="UpLens Banner" width="100%">
