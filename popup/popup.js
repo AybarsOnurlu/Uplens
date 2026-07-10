@@ -59,7 +59,7 @@ function updateStaticUI() {
   // Footer
   const footer = document.querySelector('footer p');
   if (footer) {
-    footer.innerHTML = `${t('ui.version')} • Developed by <a href="https://www.aybarsonurlu.com" target="_blank" class="transition-colors hover:text-green-400">Aybars</a>`;
+    footer.innerHTML = `${t('ui.version')} • Developed by <a href="https://www.aybarsonurlu.com" target="_blank" class="transition-colors hover:text-green-400">Aybars</a> | <a href="https://www.patreon.com/cw/AybarsOnurlu" target="_blank" class="text-orange-400 hover:text-orange-300 font-bold">Patreon 🧡</a>`;
   }
   
   // Analysis Panel Headings

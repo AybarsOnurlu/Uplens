@@ -31,4 +31,4 @@ npm run test
 
 Aybars - Software Engineering Student & Open Source Enthusiast.
 
-Feel free to contribute, open issues, or buy me a coffee! ☕
+Feel free to contribute, open issues, or [Support on Patreon](https://www.patreon.com/cw/AybarsOnurlu)! 🧡
