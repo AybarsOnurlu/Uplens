@@ -5,6 +5,7 @@
   <img src="assets/store_banner.png" alt="UpLens Banner" width="100%">
 </div>
 
+
 UpLens is an open-source, privacy-first browser extension designed to protect freelancers from scams, bad clients, and low-budget traps on Upwork. It combines fast heuristic rule-matching with a powerful BYOK (Bring Your Own Key) AI engine to analyze job postings in milliseconds.
 
 ## Features
