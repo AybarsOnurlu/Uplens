@@ -136,7 +136,9 @@ class OnboardingTour {
         <option value="pt">Português (PT)</option>
         <option value="ar">العربية (SA)</option>
       </select>
-      <button id="tour-lang-start" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition-colors mt-2">Start / Başla</button>
+      <button id="tour-lang-start" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition-colors mt-2 flex justify-center items-center">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
     `;
     
     document.body.appendChild(box);

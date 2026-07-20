@@ -88,7 +88,7 @@ export async function fetchAvailableModels(apiProvider, baseUrl, apiKey) {
       const models = data.data.map(m => m.id);
       return models.filter(m => 
         !m.includes('embedding') && !m.includes('whisper') && 
-        !m.includes('tts') && !m.includes('dall-e') && !m.includes('babbage') && !m.includes('davinci')
+        !m.includes('tts') && !m.includes('dall-e') && !m.includes('babbage') && !m.includes('davinci') && !m.includes('realtime')
       ).sort((a, b) => b.localeCompare(a));
     }
   } catch(err) {
@@ -153,7 +153,7 @@ async function getBestModel(apiProvider, baseUrl, apiKey) {
       const models = data.data.map(m => m.id);
       const chatModels = models.filter(m => 
         !m.includes('embedding') && !m.includes('whisper') && 
-        !m.includes('tts') && !m.includes('dall-e') && !m.includes('babbage') && !m.includes('davinci')
+        !m.includes('tts') && !m.includes('dall-e') && !m.includes('babbage') && !m.includes('davinci') && !m.includes('realtime')
       );
       
       if (chatModels.length === 0) return models[0];
@@ -166,10 +166,10 @@ async function getBestModel(apiProvider, baseUrl, apiKey) {
         return best;
       }
       
-      chatModels.sort((a, b) => b.localeCompare(a));
-      const mini = chatModels.find(m => m.includes('mini'));
-      const gpt4o = chatModels.find(m => m.includes('gpt-4o'));
-      const best = mini || gpt4o || chatModels[0];
+      const best = chatModels.find(m => m === 'gpt-4o-mini') || 
+                   chatModels.find(m => m === 'gpt-4o') || 
+                   chatModels.find(m => m === 'gpt-3.5-turbo') || 
+                   chatModels[0];
       setCachedModel(apiProvider, best);
       return best;
     }
