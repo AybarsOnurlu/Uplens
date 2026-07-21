@@ -408,13 +408,25 @@ function renderClientAnalysis(data) {
 }
 
 function renderSkillMatch(data) {
-  if (!data || data.matchPercentage === 0 && data.unmatched.length === 0 && data.matched.length === 0) {
-    document.getElementById('no-skills-msg').classList.remove('hidden');
+  if (!data || (data.matched.length === 0 && data.unmatched.length === 0)) {
+    const msgEl = document.getElementById('no-skills-msg');
+    msgEl.classList.remove('hidden');
+    msgEl.textContent = data && !data.hasUserSkills 
+      ? t('ui.addSkillsWarning') || 'Ayarlardan becerilerinizi ekleyin'
+      : 'İlanda yetenek etiketi bulunamadı';
     document.getElementById('skill-tags').innerHTML = '';
+    document.getElementById('skill-bar').style.width = '0%';
+    document.getElementById('skill-percentage').textContent = '';
     return;
   }
   
-  document.getElementById('no-skills-msg').classList.add('hidden');
+  if (!data.hasUserSkills) {
+    const msgEl = document.getElementById('no-skills-msg');
+    msgEl.classList.remove('hidden');
+    msgEl.textContent = t('ui.addSkillsWarning') || 'Ayarlardan becerilerinizi ekleyin';
+  } else {
+    document.getElementById('no-skills-msg').classList.add('hidden');
+  }
   document.getElementById('skill-percentage').textContent = t('ui.skillMatchPercent', { percent: data.matchPercentage });
   document.getElementById('skill-bar').style.width = `${data.matchPercentage}%`;
   
@@ -689,6 +701,10 @@ function initSettingsEvents() {
           }
         });
         document.getElementById('cv-text').value = '';
+        
+        // Auto-save settings
+        const saveBtn = document.getElementById('save-settings');
+        if (saveBtn) saveBtn.click();
       } catch (err) {
         alert('Hata: ' + err.message);
       } finally {
