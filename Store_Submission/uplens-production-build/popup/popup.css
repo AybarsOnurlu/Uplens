@@ -121,6 +121,8 @@ input::placeholder {
   border: none !important;
   background: transparent !important;
   box-shadow: none !important;
+  overflow: hidden;
+  border-radius: 0.75rem;
 }
 
 #ai-section::before {
