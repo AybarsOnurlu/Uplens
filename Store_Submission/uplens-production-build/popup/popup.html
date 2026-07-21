@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UpLens</title>
+  <link rel="stylesheet" href="../lib/tailwind.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="dark bg-slate-900 text-slate-200" style="width: 420px; min-height: 500px;">
+  <div id="app" class="overflow-y-auto flex flex-col" style="width: 420px; min-height: 500px; max-height: 600px;">
+    
+    <!-- Header -->
+    <header class="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-green-600/20 to-emerald-600/10 border-b border-slate-700/50">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+            <path d="m8 11 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-white">UpLens</h1>
+          <p class="text-xs text-slate-400">Upwork ilanlarını akıllıca analiz edin</p>
+        </div>
+      </div>
+      <button id="theme-toggle" class="p-2 rounded-lg text-slate-200 hover:text-white hover:bg-slate-700/50 transition-all" title="Tema Değiştir">
+        <svg id="theme-icon-dark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg id="theme-icon-light" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+    </header>
+    
+    <!-- Tab Navigation -->
+    <nav id="tab-nav" class="flex border-b border-slate-700/50 relative">
+      <button id="tab-analysis" class="tab-btn active flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-analysis"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Analiz</button>
+      <button id="tab-history" class="tab-btn flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-history"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z"/></svg> Geçmiş</button>
+      <button id="tab-settings" class="tab-btn flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-settings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Ayarlar</button>
+      <div id="tab-indicator" class="absolute bottom-0 h-0.5 bg-green-500 transition-all duration-300" style="width:33.33%;left:0"></div>
+    </nav>
+    
+    <!-- PANEL: Analysis -->
+    <section id="panel-analysis" class="tab-panel flex-1 p-4 space-y-4">
+      <!-- Empty State -->
+      <div id="empty-state" class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="flex justify-center mb-4 text-slate-400"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+        <h2 class="text-lg font-semibold text-slate-300 mb-2">İlan Analizi Bekleniyor</h2>
+        <p class="text-sm text-slate-500 max-w-xs">Upwork'te bir iş ilanı sayfasına gidin. Eklenti otomatik olarak analiz edecek.</p>
+      </div>
+      
+      <!-- Analysis Content -->
+      <div id="analysis-content" class="hidden space-y-4 animate-fadeIn">
+        <!-- Score Gauge -->
+        <div id="score-section" class="flex flex-col items-center py-4">
+          <div class="relative w-32 h-32">
+            <svg class="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(100,116,139,0.2)" stroke-width="10"/>
+              <circle id="score-ring" cx="60" cy="60" r="52" fill="none" stroke="#14a800" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.73" stroke-dashoffset="326.73" class="transition-all duration-1000 ease-out"/>
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span id="score-value" class="text-3xl font-bold text-white">--</span>
+              <span class="text-xs text-slate-400">/100</span>
+            </div>
+          </div>
+          <span id="score-label" class="mt-2 px-3 py-1 rounded-full text-xs font-semibold"></span>
+        </div>
+        
+        <!-- Job Title -->
+        <div class="px-1">
+          <h2 id="job-title" class="text-sm font-semibold text-slate-200 truncate"></h2>
+          <a id="job-link" href="#" target="_blank" class="text-xs text-green-400 hover:text-green-300 transition-colors">İlanı Görüntüle ↗</a>
+        </div>
+        
+        <!-- Red Flags -->
+        <div id="redflags-section" class="hidden">
+          <div class="flex items-center gap-2 mb-2">
+            <h3 class="text-xs font-semibold text-red-400 uppercase tracking-wide"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1 text-red-500"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg> Kırmızı Bayraklar</h3>
+            <span id="redflags-count" class="px-1.5 py-0.5 bg-red-500/20 text-red-400 text-xs rounded-full font-medium"></span>
+          </div>
+          <div id="redflags-list" class="space-y-1.5"></div>
+        </div>
+        
+        <!-- Green Flags -->
+        <div id="greenflags-section" class="hidden">
+          <h3 class="text-xs font-semibold text-green-400 uppercase tracking-wide mb-2"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1 text-green-500"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Olumlu Göstergeler</h3>
+          <div id="greenflags-list" class="space-y-1"></div>
+        </div>
+        
+        <!-- Analysis Cards -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Budget Card -->
+          <div id="budget-section" class="analysis-card p-3 rounded-xl">
+            <div class="flex items-center gap-1.5 mb-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              <h3 class="text-xs font-semibold text-slate-300">Bütçe</h3>
+            </div>
+            <div id="budget-score" class="text-2xl font-bold text-white mb-1"></div>
+            <div id="budget-label" class="text-xs text-slate-400 mb-2"></div>
+            <div id="budget-details" class="space-y-1 text-xs text-slate-400"></div>
+          </div>
+          
+          <!-- Client Card -->
+          <div id="client-section" class="analysis-card p-3 rounded-xl">
+            <div class="flex items-center gap-1.5 mb-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <h3 class="text-xs font-semibold text-slate-300">Müşteri</h3>
+            </div>
+            <div id="client-score" class="text-2xl font-bold text-white mb-1"></div>
+            <div id="client-label" class="text-xs text-slate-400 mb-2"></div>
+            <div id="client-details" class="space-y-1 text-xs text-slate-400"></div>
+          </div>
+        </div>
+        
+        <!-- Skill Match -->
+        <div id="skills-section" class="analysis-card p-3 rounded-xl">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-1.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-slate-400"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              <h3 class="text-xs font-semibold text-slate-300">Beceri Eşleşmesi</h3>
+            </div>
+            <span id="skill-percentage" class="text-xs font-bold text-green-400"></span>
+          </div>
+          <div class="w-full bg-slate-700 rounded-full h-2 mb-3">
+            <div id="skill-bar" class="bg-gradient-to-r from-green-500 to-emerald-400 h-2 rounded-full transition-all duration-700" style="width:0%"></div>
+          </div>
+          <div id="skill-tags" class="flex flex-wrap gap-1.5"></div>
+          <div id="no-skills-msg" class="hidden text-xs text-slate-500 text-center py-2">Ayarlardan becerilerinizi ekleyin</div>
+        <!-- AI Analysis Section -->
+        <div id="ai-section" class="analysis-card p-3 rounded-xl hidden">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-1.5">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-purple-400"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <h3 class="text-xs font-semibold text-slate-300">Yapay Zeka Özeti</h3>
+            </div>
+          </div>
+          <div id="ai-summary-content" class="text-xs text-slate-300 space-y-2 whitespace-pre-wrap"></div>
+          <button id="start-ai-btn" class="hidden w-full py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium rounded-lg transition-colors border border-slate-600 flex items-center justify-center gap-1.5 mt-2">
+            Yapay Zeka Analizini Başlat
+          </button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- PANEL: History -->
+    <section id="panel-history" class="tab-panel hidden flex-1 p-4">
+      <div id="history-list" class="space-y-2"></div>
+      <div id="history-empty" class="flex flex-col items-center justify-center py-12 text-center">
+        <div class="flex justify-center mb-3 text-slate-400"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z"/></svg></div>
+        <p class="text-sm text-slate-500">Henüz analiz edilen ilan yok</p>
+      </div>
+      <button id="clear-history" class="hidden w-full mt-4 py-2 px-4 bg-red-500/10 text-red-400 text-xs font-medium rounded-lg hover:bg-red-500/20 transition-all border border-red-500/20">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Geçmişi Temizle
+      </button>
+    </section>
+    
+    <!-- PANEL: Settings -->
+    <section id="panel-settings" class="tab-panel hidden flex-1 p-4 space-y-4">
+      <!-- Skills -->
+      <div class="space-y-2">
+        <label class="text-xs font-semibold text-slate-300">Becerileriniz</label>
+        <div id="skills-input-container" class="flex flex-wrap gap-1.5 p-2 bg-slate-800/50 rounded-lg border border-slate-700 min-h-[40px] cursor-text focus-within:border-green-500/50 transition-colors">
+          <input id="skill-input" type="text" placeholder="Beceri ekleyin (Enter ile)" class="flex-1 min-w-[120px] bg-transparent text-sm text-slate-200 outline-none placeholder-slate-500">
+        </div>
+        <p class="text-xs text-slate-500">Enter veya virgülle ekleyin</p>
+      </div>
+      
+      <!-- Rates -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="space-y-1">
+          <label for="min-hourly" class="text-xs font-semibold text-slate-300">Min. Saatlik ($)</label>
+          <input id="min-hourly" type="number" min="0" value="25" class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-sm text-white focus:border-green-500/50 outline-none transition-colors">
+        </div>
+        <div class="space-y-1">
+          <label for="min-fixed" class="text-xs font-semibold text-slate-300">Min. Sabit ($)</label>
+          <input id="min-fixed" type="number" min="0" value="100" class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-sm text-white focus:border-green-500/50 outline-none transition-colors">
+        </div>
+      </div>
+      
+      <!-- Theme -->
+      <div class="space-y-1">
+        <label class="text-xs font-semibold text-slate-300">Tema</label>
+        <div id="theme-options" class="flex gap-2">
+          <button class="theme-option flex-1 py-2 text-xs rounded-lg border border-slate-700 hover:border-green-500/50 transition-all" data-theme="auto">Otomatik</button>
+          <button class="theme-option flex-1 py-2 text-xs rounded-lg border border-slate-700 hover:border-green-500/50 transition-all" data-theme="light">Açık</button>
+          <button class="theme-option flex-1 py-2 text-xs rounded-lg border border-slate-700 hover:border-green-500/50 transition-all" data-theme="dark">Koyu</button>
+        </div>
+      </div>
+      
+      <!-- Language -->
+      <div class="space-y-1.5 mt-2">
+        <label for="lang-select" class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-400"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+          Language
+        </label>
+        <div class="relative group">
+          <select id="lang-select" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg pl-3 pr-8 py-2.5 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all appearance-none cursor-pointer hover:border-slate-600 shadow-sm">
+            <option value="tr">🇹🇷 Türkçe</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="de">🇩🇪 Deutsch</option>
+            <option value="fr">🇫🇷 Français</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="pt">🇵🇹 Português</option>
+            <option value="ar">🇸🇦 العربية</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400 group-hover:text-slate-300 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </div>
+        </div>
+      </div>
+      
+      <!-- API & AI Settings -->
+      <div class="space-y-3 mt-4 pt-4 border-t border-slate-700/50">
+        <div class="space-y-1">
+          <label for="api-provider" id="api-provider-label" class="text-xs font-semibold text-slate-300">API Sağlayıcı</label>
+          <div class="relative group">
+            <select id="api-provider" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg pl-3 pr-8 py-2 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all appearance-none cursor-pointer">
+              <option value="auto">Otomatik Algıla (Auto-Detect)</option>
+              <option value="openai">OpenAI Resmi (sk-...)</option>
+              <option value="gemini">Google Gemini (AIza...)</option>
+              <option value="custom">Özel Uyumlu (Custom URL)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <div id="api-base-url-container" class="space-y-1 hidden">
+          <label for="api-base-url" id="api-base-url-label" class="text-xs font-semibold text-slate-300">API Base URL</label>
+          <input id="api-base-url" type="text" placeholder="https://api.openai.com/v1/chat/completions" class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-sm text-white focus:border-green-500/50 outline-none transition-colors">
+        </div>
+        
+        <div class="space-y-1 relative">
+          <div class="flex justify-between items-center">
+            <label for="api-model" class="text-xs font-semibold text-slate-300">Model (Opsiyonel)</label>
+            <span id="model-loading" class="text-[10px] text-green-400 hidden animate-pulse">Fetching...</span>
+          </div>
+          <input id="api-model" list="models-list" type="text" placeholder="(Boş bırakırsanız otomatik bulur)" class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-sm text-white focus:border-green-500/50 outline-none transition-colors">
+          <datalist id="models-list"></datalist>
+        </div>
+
+        <div class="space-y-1">
+          <label for="api-key" class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-emerald-400"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+            API Key (BYOK)
+          </label>
+          <input id="api-key" type="password" placeholder="sk-..." class="w-full px-3 py-2 bg-slate-800/50 border border-slate-700 rounded-lg text-sm text-white focus:border-emerald-500/50 outline-none transition-colors">
+        </div>
+        
+        <div class="space-y-1">
+          <label for="ai-mode" class="text-xs font-semibold text-slate-300">AI Analiz Modu</label>
+          <div class="relative group">
+            <select id="ai-mode" class="w-full bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg pl-3 pr-8 py-2 outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all appearance-none cursor-pointer">
+              <option value="auto">Otomatik (Her ilanda çalışır)</option>
+              <option value="manual">Sadece Tıklayınca (Manuel)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- CV Parser -->
+      <div class="space-y-2 mt-4 pt-4 border-t border-slate-700/50">
+        <label for="cv-text" class="text-xs font-semibold text-slate-300">CV'den Yetenekleri Çıkar (Metin)</label>
+        <textarea id="cv-text" rows="3" placeholder="CV metninizi buraya yapıştırın..." class="w-full px-3 py-2 bg-transparent border border-slate-700 rounded-lg text-xs text-inherit focus:border-purple-500/50 outline-none transition-colors resize-none"></textarea>
+        <button id="cv-parse-btn" class="w-full py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium rounded-lg transition-colors border border-slate-600 flex items-center justify-center gap-1.5 mt-2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          Yetenekleri Çıkar
+        </button>
+      </div>
+      
+      <!-- Save -->
+      <button id="save-settings" class="w-full py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white text-sm font-semibold rounded-lg hover:from-green-500 hover:to-emerald-500 transition-all shadow-lg shadow-green-500/20 mt-4">
+        ✓ Ayarları Kaydet
+      </button>
+      <div id="save-toast" class="hidden text-center text-xs text-green-400 animate-fadeIn">Ayarlar kaydedildi!</div>
+
+      <div class="mt-4 pt-4 border-t border-slate-700/50 flex justify-center">
+        <button id="replay-tour-btn" class="text-xs text-blue-400 hover:text-blue-300 underline font-medium">Ürün Turunu Tekrar Başlat</button>
+      </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="px-4 py-3 border-t border-slate-700/30 flex flex-col items-center gap-2">
+      <div class="flex items-center gap-3">
+        <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-slate-300 transition-colors">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          GitHub
+        </a>
+      </div>
+      <p class="text-[10px] text-slate-600">v1.0.0 • Developed by <a href="https://www.aybarsonurlu.com" target="_blank" class="transition-colors hover:text-green-400">Aybars</a> | <a href="https://www.patreon.com/cw/AybarsOnurlu" target="_blank" class="text-orange-400 hover:text-orange-300 font-bold">Patreon 🧡</a></p>
+    </footer>
+  </div>
+  
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

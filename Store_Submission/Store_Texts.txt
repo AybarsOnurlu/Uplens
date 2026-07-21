@@ -1,0 +1,26 @@
+1. Short Description (Maks 132 Karakter)
+Analyze Upwork jobs instantly. Detect scams, check client history, match your skills via AI (BYOK), and avoid low-budget traps.
+
+2. Long Description
+UpLens: The Smart, AI-Powered Job Analyzer for Upwork Freelancers
+
+Stop wasting your Connects on scams, low-paying clients, and dead-end jobs! UpLens is a privacy-first, lightning-fast browser extension that acts as your personal shield on Upwork. Built for freelancers who value their time, UpLens automatically analyzes job postings and client histories in milliseconds.
+
+?? KEY FEATURES
+
+??? Instant Red Flag Detection: Our heuristic engine scans job descriptions for hidden risks like off-platform communication requests (Telegram, Skype), "free work" traps, and crypto payments before you even click apply.
+?? AI-Powered Skill Matching (BYOK): Bring Your Own Key! Safely connect your OpenAI or Gemini API key. UpLens will read the job description and your skills to tell you exactly how well you match the gig—costing you zero server fees.
+?? Auto CV Parser: Don't type your skills one by one. Paste your CV once, and our AI will extract your top technical skills and save them securely in your browser.
+?? Smart Client & Budget Scoring: We calculate a 0-100 Trust Score by analyzing the client's hire rate, total spent, payment verification status, and whether their budget meets your personal minimum rate.
+?? 7+ Languages Supported: Seamlessly switch between English, Turkish, German, French, Spanish, Portuguese, and Arabic. UpLens translates all analysis reports instantly.
+
+?? PRIVACY & PERFORMANCE FIRST
+Built with pure Vanilla JS and Manifest V3, UpLens is incredibly lightweight and RAM-friendly. It runs strictly in your browser. We do not track your browsing history, and your API keys are stored safely via Chrome's local storage.
+
+Take control of your freelance career and apply with confidence. Install UpLens today!
+
+3. Search Keywords
+Upwork, Freelance tools, Job analyzer, AI cover letter, Scam detector, Upwork bot, Productivity, Remote work
+
+4. Gizlilik ve Veri Beyaný (Privacy)
+"Kullanýcý verisi toplamýyoruz" (No data collection) seçeneðini iþaretleyiniz.

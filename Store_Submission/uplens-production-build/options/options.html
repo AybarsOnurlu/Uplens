@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UpLens - Ayarlar</title>
+  <link rel="stylesheet" href="../lib/tailwind.css">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .nav-link.active { border-left-color: #22c55e; color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen">
+  <div class="max-w-4xl mx-auto flex h-screen">
+    
+    <!-- Sidebar -->
+    <aside class="w-64 border-r border-slate-800 p-6 flex flex-col">
+      <div class="flex items-center gap-3 mb-10">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+            <path d="m8 11 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-white leading-tight">UpLens</h1>
+          <p class="text-xs text-slate-400">Ayarlar</p>
+        </div>
+      </div>
+      
+      <nav class="space-y-1 flex-1">
+        <button class="nav-link active w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-300 border-l-2 border-transparent hover:bg-slate-800/50 hover:text-white transition-colors" data-target="sec-profile">
+          👤 Profil ve Beceriler
+        </button>
+        <button class="nav-link w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-300 border-l-2 border-transparent hover:bg-slate-800/50 hover:text-white transition-colors" data-target="sec-license">
+          🔑 Lisans (Premium)
+        </button>
+        <button class="nav-link w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-300 border-l-2 border-transparent hover:bg-slate-800/50 hover:text-white transition-colors" data-target="sec-preferences">
+          ⚙️ Tercihler
+        </button>
+        <button class="nav-link w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-slate-300 border-l-2 border-transparent hover:bg-slate-800/50 hover:text-white transition-colors" data-target="sec-data">
+          💾 Veri Yönetimi
+        </button>
+      </nav>
+      
+      <div class="mt-auto text-xs text-slate-500 text-center">
+        v1.0.0 &bull; Güvenli Freelance
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 p-10 overflow-y-auto">
+      
+      <!-- Section: Profile -->
+      <section id="sec-profile" class="settings-section space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-1">Profil ve Beceriler</h2>
+          <p class="text-sm text-slate-400">İlanların size ne kadar uygun olduğunu analiz etmek için becerilerinizi tanımlayın.</p>
+        </div>
+        
+        <div class="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 space-y-6">
+          
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-slate-300">Beceriler (Skills)</label>
+            <p class="text-xs text-slate-500 mb-2">Upwork profilinizdeki yetenekleri buraya ekleyin. İş ilanlarındaki gereksinimlerle eşleştirilecektir.</p>
+            <div id="skills-container" class="flex flex-wrap gap-2 p-3 bg-slate-900 border border-slate-700 rounded-xl min-h-[60px] cursor-text focus-within:border-green-500 transition-colors">
+              <input id="skill-input" type="text" placeholder="Örn: React, Node.js, Logo Design..." class="flex-1 min-w-[200px] bg-transparent text-sm text-white outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-slate-300">Minimum Saatlik Ücret ($)</label>
+              <input id="min-hourly" type="number" min="0" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-green-500 outline-none transition-colors">
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-slate-300">Minimum Sabit Bütçe ($)</label>
+              <input id="min-fixed" type="number" min="0" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-green-500 outline-none transition-colors">
+            </div>
+          </div>
+          
+        </div>
+        
+        <button class="save-btn px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-green-500/20">Ayarları Kaydet</button>
+      </section>
+
+      <!-- Section: License -->
+      <section id="sec-license" class="settings-section hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-1">Lisans (Premium)</h2>
+          <p class="text-sm text-slate-400">Gelişmiş özellikleri kullanmak için Lemon Squeezy lisans anahtarınızı girin.</p>
+        </div>
+        
+        <div class="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 space-y-6">
+          <div class="space-y-2">
+            <label class="block text-sm font-semibold text-slate-300">Lisans Anahtarı</label>
+            <input id="license-key-input" type="text" placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX" class="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:border-green-500 outline-none transition-colors font-mono text-sm">
+          </div>
+          
+          <div id="license-status" class="hidden p-4 rounded-xl border text-sm font-medium flex items-center gap-2">
+            <!-- Dynamic Status Content -->
+          </div>
+        </div>
+        
+        <button id="btn-verify-license" class="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-green-500/20">Lisansı Doğrula</button>
+      </section>
+
+      <!-- Section: Preferences -->
+      <section id="sec-preferences" class="settings-section hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-1">Tercihler</h2>
+          <p class="text-sm text-slate-400">Eklenti görünümü ve davranışları.</p>
+        </div>
+        
+        <div class="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 space-y-6">
+          <div class="space-y-3">
+            <label class="block text-sm font-semibold text-slate-300">Arayüz Teması</label>
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="radio" name="theme" value="auto" class="text-green-500 focus:ring-green-500 bg-slate-900 border-slate-700"> Sistem (Otomatik)
+              </label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="radio" name="theme" value="dark" class="text-green-500 focus:ring-green-500 bg-slate-900 border-slate-700"> Koyu Tema
+              </label>
+              <label class="flex items-center gap-2 text-sm cursor-pointer">
+                <input type="radio" name="theme" value="light" class="text-green-500 focus:ring-green-500 bg-slate-900 border-slate-700"> Açık Tema
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <button class="save-btn px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-semibold rounded-xl transition-all shadow-lg shadow-green-500/20">Ayarları Kaydet</button>
+      </section>
+
+      <!-- Section: Data Management -->
+      <section id="sec-data" class="settings-section hidden space-y-6">
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-1">Veri Yönetimi</h2>
+          <p class="text-sm text-slate-400">Geçmiş analizleriniz ve depolanan veriler tarayıcınızda lokal olarak tutulur.</p>
+        </div>
+        
+        <div class="bg-slate-800/30 border border-slate-700/50 rounded-2xl p-6 space-y-6">
+          <div>
+            <h3 class="text-base font-semibold text-white mb-2">Analiz Geçmişini Temizle</h3>
+            <p class="text-sm text-slate-400 mb-4">Şimdiye kadar analiz edilen tüm iş ilanlarının kayıtlarını cihazınızdan kalıcı olarak siler.</p>
+            <button id="btn-clear-history" class="px-4 py-2 border border-red-500/50 text-red-400 hover:bg-red-500/10 rounded-lg text-sm font-medium transition-colors">Geçmişi Sil</button>
+          </div>
+          
+          <hr class="border-slate-700">
+          
+          <div>
+            <h3 class="text-base font-semibold text-white mb-2">Verileri Dışa/İçe Aktar</h3>
+            <p class="text-sm text-slate-400 mb-4">Profil ayarlarınızı ve becerilerinizi JSON dosyası olarak kaydedin veya yükleyin.</p>
+            <div class="flex gap-3">
+              <button id="btn-export" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-medium transition-colors">Dışa Aktar (.json)</button>
+              <label class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer">
+                İçe Aktar
+                <input type="file" id="file-import" class="hidden" accept=".json">
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  
+  <div id="toast" class="fixed bottom-6 right-6 bg-green-500 text-white px-6 py-3 rounded-xl shadow-xl transform translate-y-20 opacity-0 transition-all duration-300 font-medium">
+    Kaydedildi!
+  </div>
+
+  <script type="module" src="options.js"></script>
+</body>
+</html>
