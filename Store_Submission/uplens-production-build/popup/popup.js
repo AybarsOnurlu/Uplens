@@ -147,9 +147,11 @@ function updateStaticUI() {
   const appDesc = document.querySelector('header p');
   if (appDesc) setTabText(appDesc, t('ui.appDesc'));
   
-  // AI and API Settings
   const apiBaseUrlLabel = document.querySelector('label[for="api-base-url"]');
   if (apiBaseUrlLabel) apiBaseUrlLabel.textContent = t('ui.apiBaseUrl');
+  
+  const appSubtitle = document.getElementById('app-subtitle');
+  if (appSubtitle) appSubtitle.textContent = t('ui.appSubtitle');
   
   const apiModelLabel = document.querySelector('label[for="api-model"]');
   if (apiModelLabel) apiModelLabel.textContent = t('ui.apiModel');
