@@ -73,7 +73,7 @@ async function handleMessage(message, sender) {
       if (profile.aiAnalysisMode === 'auto' && profile.openAIApiKey) {
         try {
           const langMap = { tr: 'Türkçe', en: 'İngilizce', de: 'Almanca', fr: 'Fransızca', es: 'İspanyolca', pt: 'Portekizce', ar: 'Arapça' };
-          const langName = langMap[settings.language || 'tr'] || 'İngilizce';
+          const langName = langMap[settings.language || 'en'] || 'İngilizce';
           const systemPrompt = `Sen kıdemli bir Upwork ilan analiz botusun. Kullanıcının yetenekleri: ${(profile.skills || []).join(', ')}. Verilen ilanı oku. Sadece 3 kısa madde halinde, 50 kelimeyi geçmeyecek şekilde ilandaki en büyük riskleri ve kullanıcının yetenekleriyle uyuşup uyuşmadığını yaz. Asla gereksiz açıklama yapma. LÜTFEN CEVABINI KESİNLİKLE ${langName} DİLİNDE VER!`;
           const messages = [
             { role: 'system', content: systemPrompt },
@@ -113,7 +113,7 @@ async function handleMessage(message, sender) {
         }
         
         const langMap = { tr: 'Türkçe', en: 'İngilizce', de: 'Almanca', fr: 'Fransızca', es: 'İspanyolca', pt: 'Portekizce', ar: 'Arapça' };
-        const langName = langMap[settings.language || 'tr'] || 'İngilizce';
+        const langName = langMap[settings.language || 'en'] || 'İngilizce';
         const systemPrompt = `Sen kıdemli bir Upwork ilan analiz botusun. Kullanıcının yetenekleri: ${(profile.skills || []).join(', ')}. Verilen ilanı oku. Sadece 3 kısa madde halinde, 50 kelimeyi geçmeyecek şekilde ilandaki en büyük riskleri ve kullanıcının yetenekleriyle uyuşup uyuşmadığını yaz. Asla gereksiz açıklama yapma. LÜTFEN CEVABINI KESİNLİKLE ${langName} DİLİNDE VER!`;
         const messages = [
           { role: 'system', content: systemPrompt },

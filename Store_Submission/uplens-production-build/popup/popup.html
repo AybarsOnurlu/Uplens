@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
         </div>
         <div>
           <h1 class="text-sm font-bold text-white">UpLens</h1>
-          <p id="app-subtitle" class="text-xs text-slate-400">Upwork ilanlarını akıllıca analiz edin</p>
+          <p id="app-subtitle" class="text-xs text-slate-400">Analyze Upwork job postings smartly</p>
         </div>
       </div>
       <button id="theme-toggle" class="p-2 rounded-lg text-slate-200 hover:text-white hover:bg-slate-700/50 transition-all" title="Tema Değiştir">
@@ -37,9 +37,9 @@
     
     <!-- Tab Navigation -->
     <nav id="tab-nav" class="flex border-b border-slate-700/50 relative">
-      <button id="tab-analysis" class="tab-btn active flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-analysis"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Analiz</button>
-      <button id="tab-history" class="tab-btn flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-history"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z"/></svg> Geçmiş</button>
-      <button id="tab-settings" class="tab-btn flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-settings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Ayarlar</button>
+      <button id="tab-analysis" class="tab-btn active flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-analysis"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Analysis</button>
+      <button id="tab-history" class="tab-btn flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-history"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1V3c0-.6-.4-1-1-1Z"/></svg> History</button>
+      <button id="tab-settings" class="tab-btn flex-1 py-2.5 text-xs font-medium text-center transition-all" data-tab="panel-settings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="inline-block mr-1"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg> Settings</button>
       <div id="tab-indicator" class="absolute bottom-0 h-0.5 bg-green-500 transition-all duration-300" style="width:33.33%;left:0"></div>
     </nav>
     
@@ -48,7 +48,7 @@
       <!-- Empty State -->
       <div id="empty-state" class="flex flex-col items-center justify-center py-12 text-center">
         <div class="flex justify-center mb-4 text-slate-400"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
-        <h2 class="text-lg font-semibold text-slate-300 mb-2">İlan Analizi Bekleniyor</h2>
+        <h2 class="text-lg font-semibold text-slate-300 mb-2">Waiting for Job Analysis</h2>
         <p class="text-sm text-slate-500 max-w-xs">Upwork'te bir iş ilanı sayfasına gidin. Eklenti otomatik olarak analiz edecek.</p>
       </div>
       
@@ -139,7 +139,7 @@
           </div>
           <div id="ai-summary-content" class="text-xs text-slate-300 space-y-2 whitespace-pre-wrap"></div>
           <button id="start-ai-btn" class="hidden w-full py-2 bg-slate-700 hover:bg-slate-600 text-white text-xs font-medium rounded-lg transition-colors border border-slate-600 flex items-center justify-center gap-1.5 mt-2">
-            Yapay Zeka Analizini Başlat
+            Start AI Analysis
           </button>
         </div>
       </div>
