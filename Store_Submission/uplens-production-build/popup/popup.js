@@ -162,6 +162,9 @@ function updateStaticUI() {
   const apiKeyLabel = document.querySelector('label[for="api-key"]');
   if (apiKeyLabel) setTabText(apiKeyLabel, t('ui.apiKey'));
   
+  const apiTrustMsg = document.getElementById('api-trust-msg');
+  if (apiTrustMsg) apiTrustMsg.innerHTML = t('ui.apiTrustMsg');
+  
   const aiModeLabel = document.querySelector('label[for="ai-mode"]');
   if (aiModeLabel) aiModeLabel.textContent = t('ui.aiAnalysisMode');
   

@@ -30,6 +30,11 @@ class OnboardingTour {
         target: '[data-tab="panel-analysis"]',
         tab: 'panel-analysis',
         text: () => t('ui.tourStep3')
+      },
+      {
+        target: 'footer',
+        tab: 'panel-analysis',
+        text: () => t('ui.tourStepPrivacy')
       }
     ];
     this.currentStep = 0;

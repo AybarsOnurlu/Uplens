@@ -19,6 +19,8 @@ const translations = {
   tr: {
     api: { errorMissingKey: 'API Key eksik. Lütfen ayarlardan API Key giriniz.', errorInvalidUrl: 'Geçersiz API Base URL.', errorAuth: 'API Yetkilendirme hatası ({{provider}}). Lütfen API Key değerini kontrol ediniz.', errorQuota: 'Limit Hatası (429). Ücretsiz sürümde dakikada sadece 15 işlem yapılabilir. Lütfen 1 dakika bekleyip tekrar deneyin veya {{provider}} limitlerinizi kontrol edin.', errorNetwork: 'Bağlantı hatası (Failed to fetch). İnternetinizi, VPN durumunu veya URL adresini kontrol edin.', errorGeneric: 'API Hatası: {{status}} {{text}}', errorInvalidResponse: 'Geçersiz API yanıtı.', },
     ui: {
+      apiTrustMsg: '🔒 Anahtarınız sadece tarayıcınızda (lokal) saklanır. Kodlarımızı <a href=\"https://github.com/AybarsOnurlu/Uplens\" target=\"_blank\" class=\"underline text-emerald-400 hover:text-emerald-300\">GitHub</a> üzerinden inceleyebilirsiniz.',
+      tourStepPrivacy: 'UpLens %100 Açık Kaynaklıdır ve API anahtarınızı asla sunucularında saklamaz. Tüm kodlarımızı GitHub üzerinden şeffafça inceleyebilirsiniz.',
       scoreText: 'Skor',
       apiProviderLabel: 'API Sağlayıcı',
       apiProvAuto: 'Otomatik Algıla (Auto-Detect)',
