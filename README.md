@@ -37,4 +37,6 @@ npm run test
 
 **Aybars** - Software Engineering Student & Open Source Enthusiast.
 
-Feel free to contribute, open issues, or star the repository on [GitHub](https://github.com/AybarsOnurlu)! ⭐
+Feel free to contribute, open issues, or star the repository on GitHub! ⭐
+
+👉 [**https://github.com/AybarsOnurlu/Uplens**](https://github.com/AybarsOnurlu/Uplens)
