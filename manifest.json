@@ -3,7 +3,7 @@
   "name": "UpLens",
   "short_name": "UpLens",
   "version": "1.0.0",
-  "description": "Upwork iş ilanlarını analiz eder, risk skorları ve kırmızı bayrakları tespit eder.",
+  "description": "Analyze Upwork jobs instantly. Detect scams, check client history, and match skills via AI.",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
     "https://*.upwork.com/*",
