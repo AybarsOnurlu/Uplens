@@ -17,6 +17,11 @@ class OnboardingTour {
         isLanguageSelect: true
       },
       {
+        target: 'footer',
+        tab: 'panel-settings',
+        text: () => t('ui.tourStepPrivacy')
+      },
+      {
         target: '#api-key',
         tab: 'panel-settings',
         text: () => t('ui.tourStep1')
@@ -30,11 +35,6 @@ class OnboardingTour {
         target: '[data-tab="panel-analysis"]',
         tab: 'panel-analysis',
         text: () => t('ui.tourStep3')
-      },
-      {
-        target: 'footer',
-        tab: 'panel-analysis',
-        text: () => t('ui.tourStepPrivacy')
       }
     ];
     this.currentStep = 0;
@@ -173,7 +173,11 @@ class OnboardingTour {
     this.originalStyles.set(el, {
       position: el.style.position,
       zIndex: el.style.zIndex,
-      backgroundColor: el.style.backgroundColor
+      backgroundColor: el.style.backgroundColor,
+      boxShadow: el.style.boxShadow,
+      outline: el.style.outline,
+      outlineOffset: el.style.outlineOffset,
+      borderRadius: el.style.borderRadius
     });
 
     // Make element pop over overlay
@@ -183,13 +187,16 @@ class OnboardingTour {
     }
     el.style.zIndex = '102';
     
-    // Add white/light bg if it's transparent or dark so it stands out better
+    // Add distinct glowing border to highlight the target
+    el.style.outline = '3px solid #10b981'; // emerald-500
+    el.style.outlineOffset = '4px';
+    el.style.boxShadow = '0 0 25px rgba(16, 185, 129, 0.4)';
+    el.style.borderRadius = computedStyle.borderRadius !== '0px' ? computedStyle.borderRadius : '8px';
+    
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
       el.style.backgroundColor = '#1e293b'; // slate-800
     } else {
       el.style.backgroundColor = computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' ? computedStyle.backgroundColor : '#0f172a';
-      el.style.borderRadius = '8px';
-      el.style.padding = '4px';
     }
   }
 
@@ -199,8 +206,10 @@ class OnboardingTour {
       this.activeTarget.style.position = orig.position;
       this.activeTarget.style.zIndex = orig.zIndex;
       this.activeTarget.style.backgroundColor = orig.backgroundColor;
-      this.activeTarget.style.borderRadius = '';
-      this.activeTarget.style.padding = '';
+      this.activeTarget.style.boxShadow = orig.boxShadow;
+      this.activeTarget.style.outline = orig.outline;
+      this.activeTarget.style.outlineOffset = orig.outlineOffset;
+      this.activeTarget.style.borderRadius = orig.borderRadius;
       this.activeTarget = null;
     }
     this.tooltip.classList.remove('opacity-100');

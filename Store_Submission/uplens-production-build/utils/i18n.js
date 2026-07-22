@@ -269,6 +269,8 @@ const translations = {
   en: {
     api: { errorMissingKey: 'API Key missing. Please enter it in Settings.', errorInvalidUrl: 'Invalid API Base URL.', errorAuth: 'API Auth error ({{provider}}). Check your API Key.', errorQuota: 'API Quota Exceeded (429). Free tier is limited to 15 requests per minute. Please wait 1 minute and try again, or check your {{provider}} billing/limits.', errorNetwork: 'Network error (Failed to fetch). Check your connection, VPN, or if the API URL is correct.', errorGeneric: 'API Error: {{status}} {{text}}', errorInvalidResponse: 'Invalid API response.', },
     ui: {
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'API Provider',
       apiProvAuto: 'Auto-Detect',
@@ -517,6 +519,8 @@ const translations = {
   de: {
     api: { errorMissingKey: 'API-Schlüssel fehlt. Bitte in den Einstellungen eingeben.', errorInvalidUrl: 'Ungültige API-Basis-URL.', errorAuth: 'API-Authentifizierungsfehler. Bitte API-Schlüssel überprüfen.', errorQuota: 'API-Kontingent überschritten. Bitte {{provider}}-Guthaben überprüfen.', errorNetwork: 'Netzwerkfehler (Failed to fetch). Überprüfen Sie Ihre Verbindung, Ihr VPN oder die API-URL.', errorGeneric: 'API-Fehler: {{status}} {{text}}', errorInvalidResponse: 'Ungültige API-Antwort.', },
     ui: {
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'API-Anbieter',
       apiProvAuto: 'Automatisch erkennen',
@@ -765,6 +769,10 @@ const translations = {
   fr: {
     api: { errorMissingKey: 'Clé API manquante. Veuillez la saisir dans les paramètres.', errorInvalidUrl: 'URL de base de l\'API non valide.', errorAuth: 'Erreur d\'authentification API. Vérifiez votre clé API.', errorQuota: 'Quota API dépassé. Veuillez vérifier votre solde {{provider}}.', errorNetwork: 'Erreur réseau (Failed to fetch). Vérifiez votre connexion, VPN ou URL API.', errorGeneric: 'Erreur API : {{status}} {{text}}', errorInvalidResponse: 'Réponse API non valide.', },
     ui: {
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'Fournisseur API',
       apiProvAuto: 'Détection automatique',
@@ -1012,6 +1020,8 @@ const translations = {
   es: {
     api: { errorMissingKey: 'Falta la clave API. Introdúzcala en Configuración.', errorInvalidUrl: 'URL base de API no válida.', errorAuth: 'Error de autenticación de API. Compruebe su clave API.', errorQuota: 'Cuota de API excedida. Compruebe su saldo/créditos de {{provider}}.', errorNetwork: 'Error de red (Failed to fetch). Compruebe su conexión, VPN o si la URL de la API es correcta.', errorGeneric: 'Error de API: {{status}} {{text}}', errorInvalidResponse: 'Respuesta de API no válida.', },
     ui: {
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'Proveedor de API',
       apiProvAuto: 'Detección automática',
@@ -1259,6 +1269,10 @@ const translations = {
   pt: {
     api: { errorMissingKey: 'Chave API ausente. Insira-a nas Configurações.', errorInvalidUrl: 'URL base da API inválido.', errorAuth: 'Erro de autenticação da API. Verifique sua chave API.', errorQuota: 'Cota da API excedida. Verifique seu saldo da {{provider}}.', errorNetwork: 'Erro de rede (Failed to fetch). Verifique sua conexão, VPN ou a URL da API.', errorGeneric: 'Erro da API: {{status}} {{text}}', errorInvalidResponse: 'Resposta da API inválida.', },
     ui: {
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'Provedor de API',
       apiProvAuto: 'Detectar automaticamente',
@@ -1506,6 +1520,12 @@ const translations = {
   ar: {
     api: { errorMissingKey: 'مفتاح API مفقود. يرجى إدخاله في الإعدادات.', errorInvalidUrl: 'عنوان URL الأساسي لـ API غير صالح.', errorAuth: 'خطأ في مصادقة API. تحقق من مفتاح API.', errorQuota: 'تجاوزت حصة API. يرجى التحقق من رصيد {{provider}}.', errorNetwork: 'خطأ في الشبكة (Failed to fetch). تحقق من الاتصال أو VPN أو عنوان URL.', errorGeneric: 'خطأ API: {{status}} {{text}}', errorInvalidResponse: 'استجابة API غير صالحة.', },
     ui: {
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'مزود API',
       apiProvAuto: 'اكتشاف تلقائي',
