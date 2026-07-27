@@ -17,7 +17,9 @@
     "https://api.deepseek.com/*",
     "https://api.perplexity.ai/*",
     "https://api.cohere.com/*",
-    "https://dashscope.aliyuncs.com/*"
+    "https://dashscope.aliyuncs.com/*",
+    "https://api-inference.huggingface.co/*",
+    "https://api.x.ai/*"
   ],
   "background": {
     "service_worker": "sw.js",
