@@ -160,22 +160,11 @@ async function handleMessage(message, sender) {
       return { success: true };
     case MSG.VERIFY_LICENSE:
       try {
-        const response = await fetch("http://localhost:8787", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ license_key: data.licenseKey })
-        });
-        const result = await response.json();
-        
-        if (result.valid) {
-          await StorageHelper.saveUserProfile({ licenseKey: data.licenseKey, isPremium: true });
-          return { success: true, valid: true };
-        } else {
-          await StorageHelper.saveUserProfile({ isPremium: false });
-          return { success: false, valid: false, error: result.error || "Geçersiz lisans" };
-        }
+        // License verification is not yet available in the public release.
+        // This feature will be enabled in a future update with a production endpoint.
+        return { success: false, valid: false, error: "License verification is not available yet. Stay tuned for future updates!" };
       } catch (err) {
-        return { success: false, error: "Bağlantı hatası: " + err.message };
+        return { success: false, error: "Connection error: " + err.message };
       }
     default:
       return { error: 'Unknown message type: ' + type };
