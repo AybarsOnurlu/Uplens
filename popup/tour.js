@@ -58,14 +58,14 @@ class OnboardingTour {
 
   createTooltip() {
     this.tooltip = document.createElement('div');
-    this.tooltip.className = 'absolute z-[101] w-64 bg-slate-800 border border-slate-600 rounded-xl p-4 shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-auto';
+    this.tooltip.className = 'absolute z-[101] w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl p-4 shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-auto';
     
     this.tooltip.innerHTML = `
-      <p id="tour-text" class="text-sm text-slate-200 mb-4 font-medium leading-relaxed"></p>
+      <p id="tour-text" class="text-sm text-slate-800 dark:text-slate-200 mb-4 font-medium leading-relaxed"></p>
       <div class="flex justify-between items-center">
-        <button id="tour-skip" class="text-xs text-slate-400 hover:text-slate-300 font-medium"></button>
+        <button id="tour-skip" class="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 font-medium"></button>
         <div class="flex items-center gap-2">
-          <span id="tour-indicator" class="text-[10px] text-slate-500 font-bold"></span>
+          <span id="tour-indicator" class="text-[10px] text-slate-400 dark:text-slate-500 font-bold"></span>
           <button id="tour-next" class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition-colors"></button>
         </div>
       </div>
@@ -123,16 +123,16 @@ class OnboardingTour {
     
     const box = document.createElement('div');
     box.id = 'tour-lang-box';
-    box.className = 'absolute z-[101] bg-slate-800 border border-slate-600 rounded-xl p-6 shadow-2xl flex flex-col items-center justify-center gap-4 pointer-events-auto';
+    box.className = 'absolute z-[101] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl p-6 shadow-2xl flex flex-col items-center justify-center gap-4 pointer-events-auto';
     box.style.top = '50%';
     box.style.left = '50%';
     box.style.transform = 'translate(-50%, -50%)';
     box.style.width = '320px';
 
     box.innerHTML = `
-      <h2 class="text-lg font-bold text-white text-center">Welcome to UpLens!</h2>
-      <p class="text-sm text-slate-300 text-center mb-2">Please select your language:</p>
-      <select id="tour-lang-select" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white text-sm focus:border-blue-500 focus:outline-none mb-2">
+      <h2 class="text-lg font-bold text-slate-800 dark:text-white text-center">${t('ui.tourWelcome') || 'Welcome to UpLens!'}</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-300 text-center mb-2">${t('ui.tourLangSelect') || 'Please select your language:'}</p>
+      <select id="tour-lang-select" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-slate-800 dark:text-white text-sm focus:border-blue-500 focus:outline-none mb-2">
         <option value="en">English (EN)</option>
         <option value="tr">Türkçe (TR)</option>
         <option value="de">Deutsch (DE)</option>
@@ -194,9 +194,9 @@ class OnboardingTour {
     el.style.borderRadius = computedStyle.borderRadius !== '0px' ? computedStyle.borderRadius : '8px';
     
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-      el.style.backgroundColor = '#1e293b'; // slate-800
+      el.style.backgroundColor = document.body.classList.contains('dark') ? '#1e293b' : '#f8fafc'; // slate-800 or slate-50
     } else {
-      el.style.backgroundColor = computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' ? computedStyle.backgroundColor : '#0f172a';
+      el.style.backgroundColor = computedStyle.backgroundColor !== 'rgba(0, 0, 0, 0)' ? computedStyle.backgroundColor : (document.body.classList.contains('dark') ? '#0f172a' : '#ffffff');
     }
   }
 

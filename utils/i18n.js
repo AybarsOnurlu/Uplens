@@ -33,6 +33,8 @@ const translations = {
       aiError: 'Yapay Zeka Hatası',
       tourReplay: 'Ürün Turunu Tekrar Başlat',
 
+      tourWelcome: 'UpLens\\'e Hoş Geldiniz!',
+      tourLangSelect: 'Lütfen dilinizi seçin:',
       apiBaseUrl: 'API Base URL',
       apiModel: 'Model (Opsiyonel)',
       apiModelPlaceholder: 'Örn: gpt-4o-mini (Boş bırakırsanız otomatik bulur)',
@@ -286,6 +288,8 @@ const translations = {
       aiError: 'AI Error',
       tourReplay: 'Restart Product Tour',
 
+      tourWelcome: 'Welcome to UpLens!',
+      tourLangSelect: 'Please select your language:',
       apiBaseUrl: 'API Base URL',
       apiModel: 'Model (Optional)',
       apiModelPlaceholder: 'e.g., gpt-4o-mini (Leave empty to auto-detect)',
