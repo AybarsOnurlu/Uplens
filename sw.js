@@ -112,9 +112,9 @@ async function handleMessage(message, sender) {
           return { success: false, error: t('api.errorMissingKey') || 'API Key is missing.' };
         }
         
-        const langMap = { tr: 'Türkçe', en: 'İngilizce', de: 'Almanca', fr: 'Fransızca', es: 'İspanyolca', pt: 'Portekizce', ar: 'Arapça' };
-        const langName = langMap[settings.language || 'en'] || 'İngilizce';
-        const systemPrompt = `Sen kıdemli bir Upwork ilan analiz botusun. Kullanıcının yetenekleri: ${(profile.skills || []).join(', ')}. Verilen ilanı oku. Sadece 3 kısa madde halinde, 50 kelimeyi geçmeyecek şekilde ilandaki en büyük riskleri ve kullanıcının yetenekleriyle uyuşup uyuşmadığını yaz. Asla gereksiz açıklama yapma. LÜTFEN CEVABINI KESİNLİKLE ${langName} DİLİNDE VER!`;
+        const langMap = { tr: 'Türkçe', en: 'English', de: 'Deutsch', fr: 'Français', es: 'Español', pt: 'Português', ar: 'العربية' };
+        const langName = langMap[settings.language || 'en'] || 'English';
+        const systemPrompt = t('ai.systemPrompt', { skills: (profile.skills || []).join(', '), lang: langName });
         const messages = [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: `Job Title: ${analysisData.jobTitle}\nJob Description: ${analysisData.rawData?.description || ''}` }

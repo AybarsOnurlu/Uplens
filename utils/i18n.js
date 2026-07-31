@@ -18,7 +18,10 @@ const translations = {
   // ═══════════════════════════════════════════════════════════════════════════
   tr: {
     api: { errorMissingKey: 'API Key eksik. Lütfen ayarlardan API Key giriniz.', errorInvalidUrl: 'Geçersiz API Base URL.', errorAuth: 'API Yetkilendirme hatası ({{provider}}). Lütfen API Key değerini kontrol ediniz.', errorQuota: 'Limit Hatası (429). Ücretsiz sürümde dakikada sadece 15 işlem yapılabilir. Lütfen 1 dakika bekleyip tekrar deneyin veya {{provider}} limitlerinizi kontrol edin.', errorNetwork: 'Bağlantı hatası (Failed to fetch). İnternetinizi, VPN durumunu veya URL adresini kontrol edin.', errorGeneric: 'API Hatası: {{status}} {{text}}', errorInvalidResponse: 'Geçersiz API yanıtı.', },
+    cv: { errorEmpty: 'Lütfen CV metni girin.', errorApi: 'Hata: {{error}}' },
+    ai: { systemPrompt: 'Sen kıdemli bir Upwork ilan analiz botusun. Kullanıcının yetenekleri: {{skills}}. Verilen ilanı oku. Sadece 3 kısa madde halinde, 50 kelimeyi geçmeyecek şekilde ilandaki en büyük riskleri ve kullanıcının yetenekleriyle uyuşup uyuşmadığını yaz. Asla gereksiz açıklama yapma. LÜTFEN CEVABINI KESİNLİKLE {{lang}} DİLİNDE VER!' },
     ui: {
+      themeToggle: 'Tema Değiştir',
       apiTrustMsg: '🔒 Anahtarınız sadece tarayıcınızda (lokal) saklanır. Kodlarımızı <a href=\"https://github.com/AybarsOnurlu/Uplens\" target=\"_blank\" class=\"underline text-emerald-400 hover:text-emerald-300\">GitHub</a> üzerinden inceleyebilirsiniz.',
       tourStepPrivacy: 'UpLens %100 Açık Kaynaklıdır ve API anahtarınızı asla sunucularında saklamaz. Tüm kodlarımızı GitHub üzerinden şeffafça inceleyebilirsiniz.',
       scoreText: 'Skor',
@@ -268,7 +271,10 @@ const translations = {
   // ═══════════════════════════════════════════════════════════════════════════
   en: {
     api: { errorMissingKey: 'API Key missing. Please enter it in Settings.', errorInvalidUrl: 'Invalid API Base URL.', errorAuth: 'API Auth error ({{provider}}). Check your API Key.', errorQuota: 'API Quota Exceeded (429). Free tier is limited to 15 requests per minute. Please wait 1 minute and try again, or check your {{provider}} billing/limits.', errorNetwork: 'Network error (Failed to fetch). Check your connection, VPN, or if the API URL is correct.', errorGeneric: 'API Error: {{status}} {{text}}', errorInvalidResponse: 'Invalid API response.', },
+    cv: { errorEmpty: 'Please enter CV text.', errorApi: 'Error: {{error}}' },
+    ai: { systemPrompt: 'You are a senior Upwork job analysis bot. User\'s skills: {{skills}}. Read the given job posting. Write the biggest risks and whether it matches the user\'s skills in exactly 3 short bullet points, not exceeding 50 words. Never provide unnecessary explanations. PLEASE RESPOND STRICTLY IN {{lang}}!' },
     ui: {
+      themeToggle: 'Toggle Theme',
       apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
       tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
       scoreText: 'Score',

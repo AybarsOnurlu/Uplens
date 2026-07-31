@@ -56,10 +56,10 @@ function updateLicenseUI(isPremium) {
   
   if (isPremium) {
     statusEl.classList.add('bg-green-500/20', 'text-green-400', 'border-green-500/30');
-    statusEl.innerHTML = '<span>✅</span> Lisans Aktif (Premium)';
+    statusEl.innerHTML = '<span>✅</span> License Active (Premium)';
   } else {
     statusEl.classList.add('bg-red-500/20', 'text-red-400', 'border-red-500/30');
-    statusEl.innerHTML = '<span>⚠️</span> Lisans Doğrulanmadı';
+    statusEl.innerHTML = '<span>⚠️</span> License Not Verified';
   }
 }
 
@@ -120,15 +120,15 @@ function initEvents() {
       };
       
       await StorageHelper.saveUserProfile(currentSettings);
-      showToast('Ayarlar başarıyla kaydedildi!');
+      showToast('Settings saved successfully!');
     };
   });
   
   // Clear History
   document.getElementById('btn-clear-history').onclick = async () => {
-    if (confirm('Tüm analiz geçmişinizi silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.')) {
+    if (confirm('Are you sure you want to delete all analysis history? This action cannot be undone.')) {
       await StorageHelper.clearHistory();
-      showToast('Geçmiş temizlendi!');
+      showToast('History cleared!');
     }
   };
   
@@ -155,10 +155,10 @@ function initEvents() {
         if (typeof imported === 'object' && imported !== null) {
           await StorageHelper.saveUserProfile({ ...DEFAULT_PROFILE, ...imported });
           await loadSettings();
-          showToast('Ayarlar içe aktarıldı!');
+          showToast('Settings imported!');
         }
       } catch (err) {
-        alert('Geçersiz dosya formatı.');
+        alert('Invalid file format.');
       }
     };
     reader.readAsText(file);
@@ -167,11 +167,11 @@ function initEvents() {
   // Verify License
   document.getElementById('btn-verify-license').onclick = () => {
     const key = document.getElementById('license-key-input').value.trim();
-    if (!key) return showToast('Lütfen bir lisans anahtarı girin');
+    if (!key) return showToast('Please enter a license key');
     
     const btn = document.getElementById('btn-verify-license');
     const originalText = btn.textContent;
-    btn.textContent = 'Doğrulanıyor...';
+    btn.textContent = 'Verifying...';
     btn.disabled = true;
     
     chrome.runtime.sendMessage({ type: 'VERIFY_LICENSE', data: { licenseKey: key } }, async (response) => {
@@ -179,10 +179,10 @@ function initEvents() {
       btn.disabled = false;
       
       if (response && response.success) {
-        showToast('Lisans başarıyla doğrulandı!');
+        showToast('License verified successfully!');
         await loadSettings();
       } else {
-        showToast(response?.error || 'Doğrulama başarısız.');
+        showToast(response?.error || 'Verification failed.');
         await loadSettings();
       }
     });

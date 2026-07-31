@@ -115,7 +115,7 @@ function analyzeQuality(jobData, skillMatch) {
   if (jobData.isSearchTile) {
     // Search page only has excerpts, so don't penalize. Give neutral/good score.
     score += 10;
-    details.push(`${ICON_CHECK} Arama sonuçlarında özet gösteriliyor`);
+    details.push(`${ICON_CHECK} ${t('quality.searchExcerpt') || 'Excerpt shown in search results'}`);
   } else {
     if (wordCount === 0) {
       score -= 30;
@@ -143,14 +143,14 @@ function analyzeQuality(jobData, skillMatch) {
   if (skillMatch && skillMatch.hasUserSkills && skillMatch.matchPercentage > 0) {
     if (skillMatch.matchPercentage >= 50) {
       score += 15;
-      details.push(`${ICON_STAR} Yetenekleriniz ilanla çok uyumlu (%${skillMatch.matchPercentage})`);
+      details.push(`${ICON_STAR} ${t('quality.skillsHighlyMatched', { percent: skillMatch.matchPercentage }) || 'Your skills highly match the posting (' + skillMatch.matchPercentage + '%)'}`);
     } else {
       score += 5;
-      details.push(`${ICON_CHECK} Yetenekleriniz kısmen eşleşiyor (%${skillMatch.matchPercentage})`);
+      details.push(`${ICON_CHECK} ${t('quality.skillsPartiallyMatched', { percent: skillMatch.matchPercentage }) || 'Your skills partially match (' + skillMatch.matchPercentage + '%)'}`);
     }
   } else if (skillMatch && skillMatch.hasUserSkills && skillMatch.unmatched && skillMatch.unmatched.length > 0 && skills.length > 0) {
     score -= 10;
-    details.push(`${ICON_WARNING} Yetenekleriniz ilanla eşleşmiyor`);
+    details.push(`${ICON_WARNING} ${t('quality.skillsNotMatched') || 'Your skills do not match the posting'}`);
   } else if (skills.length === 0) {
     score -= 10;
     details.push(`${ICON_WARNING} ${t('quality.noSkills')}`);
@@ -184,26 +184,26 @@ function analyzeQuality(jobData, skillMatch) {
   }
 
   if (jobData.weeklyHours) {
-    details.push(`🕐 Haftalık saat: ${jobData.weeklyHours}`);
+    details.push(`🕐 ${t('quality.weeklyHours', { hours: jobData.weeklyHours }) || 'Weekly hours: ' + jobData.weeklyHours}`);
     score += 2;
   }
 
   if (jobData.category) {
-    details.push(`📂 Kategori: ${jobData.category}`);
+    details.push(`📂 ${t('quality.category', { cat: jobData.category }) || 'Category: ' + jobData.category}`);
   }
 
   if (jobData.proposalCount !== null && jobData.proposalCount !== undefined) {
     if (jobData.proposalCount < 5) {
       score += 10;
-      details.push(`${ICON_STAR} Az teklif: ${jobData.proposalCount} — Düşük rekabet`);
+      details.push(`${ICON_STAR} ${t('quality.lowProposals', { count: jobData.proposalCount }) || 'Few proposals: ' + jobData.proposalCount + ' — Low competition'}`);
     } else if (jobData.proposalCount >= 5 && jobData.proposalCount <= 15) {
       score += 5;
-      details.push(`${ICON_CHART} Normal teklif sayısı: ${jobData.proposalCount}`);
+      details.push(`${ICON_CHART} ${t('quality.normalProposals', { count: jobData.proposalCount }) || 'Normal proposal count: ' + jobData.proposalCount}`);
     } else if (jobData.proposalCount > 15 && jobData.proposalCount <= 50) {
-      details.push(`${ICON_WARNING} Yüksek teklif sayısı: ${jobData.proposalCount}`);
+      details.push(`${ICON_WARNING} ${t('quality.highProposals', { count: jobData.proposalCount }) || 'High proposal count: ' + jobData.proposalCount}`);
     } else if (jobData.proposalCount > 50) {
       score -= 10;
-      details.push(`${ICON_FLAG} Çok yüksek rekabet: ${jobData.proposalCount}+ teklif`);
+      details.push(`${ICON_FLAG} ${t('quality.veryHighProposals', { count: jobData.proposalCount }) || 'Very high competition: ' + jobData.proposalCount + '+ proposals'}`);
     }
   }
 

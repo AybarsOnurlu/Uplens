@@ -141,6 +141,8 @@ function updateStaticUI() {
   if (clientHeading) setTabText(clientHeading, t('ui.client'));
   
   // Main Header
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  if (themeToggleBtn) themeToggleBtn.title = t('ui.themeToggle') || 'Toggle Theme';
   const appTitle = document.querySelector('header h1');
   if (appTitle) setTabText(appTitle, t('ui.appName'));
   
@@ -191,7 +193,7 @@ function updateStaticUI() {
   
   const replayTourBtn = document.getElementById('replay-tour-btn');
   if (replayTourBtn) {
-    replayTourBtn.textContent = typeof t === 'function' && t('ui.tourReplay') ? t('ui.tourReplay') : 'Ürün Turunu Tekrar Başlat';
+    replayTourBtn.textContent = typeof t === 'function' && t('ui.tourReplay') ? t('ui.tourReplay') : 'Restart Product Tour';
   }
 }
 
@@ -674,7 +676,7 @@ function initSettingsEvents() {
   if (cvBtn) {
     cvBtn.onclick = async () => {
       const cvText = document.getElementById('cv-text').value.trim();
-      if (!cvText) return alert('Lütfen CV metni girin.');
+      if (!cvText) return alert(t('cv.errorEmpty') || 'Please enter CV text.');
       
       cvBtn.disabled = true;
       const originalText = cvBtn.textContent;
@@ -711,7 +713,7 @@ function initSettingsEvents() {
         const saveBtn = document.getElementById('save-settings');
         if (saveBtn) saveBtn.click();
       } catch (err) {
-        alert('Hata: ' + err.message);
+        alert(t('cv.errorApi', { error: err.message }) || 'Error: ' + err.message);
       } finally {
         cvBtn.disabled = false;
         cvBtn.textContent = originalText;
