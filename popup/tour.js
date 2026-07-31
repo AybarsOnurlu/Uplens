@@ -57,15 +57,16 @@ class OnboardingTour {
   }
 
   createTooltip() {
+    const isDark = document.body.classList.contains('dark');
     this.tooltip = document.createElement('div');
-    this.tooltip.className = 'absolute z-[101] w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl p-4 shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-auto';
+    this.tooltip.className = `absolute z-[101] w-64 ${isDark ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'} border rounded-xl p-4 shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-auto`;
     
     this.tooltip.innerHTML = `
-      <p id="tour-text" class="text-sm text-slate-800 dark:text-slate-200 mb-4 font-medium leading-relaxed"></p>
+      <p id="tour-text" class="text-sm ${isDark ? 'text-slate-200' : 'text-slate-800'} mb-4 font-medium leading-relaxed"></p>
       <div class="flex justify-between items-center">
-        <button id="tour-skip" class="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 font-medium"></button>
+        <button id="tour-skip" class="text-xs ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-slate-500 hover:text-slate-700'} font-medium"></button>
         <div class="flex items-center gap-2">
-          <span id="tour-indicator" class="text-[10px] text-slate-400 dark:text-slate-500 font-bold"></span>
+          <span id="tour-indicator" class="text-[10px] ${isDark ? 'text-slate-500' : 'text-slate-400'} font-bold"></span>
           <button id="tour-next" class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition-colors"></button>
         </div>
       </div>
@@ -121,18 +122,19 @@ class OnboardingTour {
   showLanguageSelect() {
     this.tooltip.classList.add('opacity-0');
     
+    const isDark = document.body.classList.contains('dark');
     const box = document.createElement('div');
     box.id = 'tour-lang-box';
-    box.className = 'absolute z-[101] bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl p-6 shadow-2xl flex flex-col items-center justify-center gap-4 pointer-events-auto';
+    box.className = `absolute z-[101] ${isDark ? 'bg-slate-800 border-slate-600' : 'bg-white border-slate-200'} border rounded-xl p-6 shadow-2xl flex flex-col items-center justify-center gap-4 pointer-events-auto`;
     box.style.top = '50%';
     box.style.left = '50%';
     box.style.transform = 'translate(-50%, -50%)';
     box.style.width = '320px';
 
     box.innerHTML = `
-      <h2 class="text-lg font-bold text-slate-800 dark:text-white text-center">${t('ui.tourWelcome') || 'Welcome to UpLens!'}</h2>
-      <p class="text-sm text-slate-600 dark:text-slate-300 text-center mb-2">${t('ui.tourLangSelect') || 'Please select your language:'}</p>
-      <select id="tour-lang-select" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-slate-800 dark:text-white text-sm focus:border-blue-500 focus:outline-none mb-2">
+      <h2 class="text-lg font-bold ${isDark ? 'text-white' : 'text-slate-800'} text-center">${t('ui.tourWelcome') || 'Welcome to UpLens!'}</h2>
+      <p class="text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'} text-center mb-2">${t('ui.tourLangSelect') || 'Please select your language:'}</p>
+      <select id="tour-lang-select" class="w-full ${isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'} border rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none mb-2">
         <option value="en">English (EN)</option>
         <option value="tr">Türkçe (TR)</option>
         <option value="de">Deutsch (DE)</option>
