@@ -6,6 +6,78 @@ import { initTour } from './tour.js';
 
 let currentTheme = 'auto';
 let currentSettings = null;
+let systemThemeQuery = null;
+const DATE_LOCALES = {
+  tr: 'tr-TR',
+  en: 'en-US',
+  de: 'de-DE',
+  fr: 'fr-FR',
+  es: 'es-ES',
+  pt: 'pt-PT',
+  ar: 'ar-SA'
+};
+
+function isLocalApiUrl(url) {
+  return url.protocol === 'http:' && (url.hostname === 'localhost' || url.hostname === '127.0.0.1');
+}
+
+function getApiAccessPattern(profile) {
+  const apiKey = (profile.openAIApiKey || '').trim();
+  let provider = profile.apiProvider || 'auto';
+  let endpoint = (profile.apiBaseUrl || '').trim();
+
+  if (provider === 'auto') {
+    if (apiKey.startsWith('AIza') || apiKey.startsWith('AQ.')) provider = 'gemini';
+    else if (apiKey.startsWith('gsk_')) provider = 'groq';
+    else provider = 'openai';
+  }
+
+  if (provider === 'gemini') endpoint = 'https://generativelanguage.googleapis.com/';
+  else if (provider === 'groq') endpoint = 'https://api.groq.com/';
+  else if (provider === 'openai' && (!endpoint || endpoint.includes('api.openai.com'))) endpoint = 'https://api.openai.com/';
+
+  if (!endpoint) throw new Error(t('api.errorInvalidUrl'));
+
+  let parsed;
+  try {
+    parsed = new URL(endpoint);
+  } catch {
+    throw new Error(t('api.errorInvalidUrl'));
+  }
+
+  if (parsed.protocol !== 'https:' && !isLocalApiUrl(parsed)) {
+    throw new Error(t('api.errorSecureUrl'));
+  }
+
+  // Chrome match patterns do not include ports; a host pattern covers every port.
+  return `${parsed.protocol}//${parsed.hostname}/*`;
+}
+
+async function ensureApiAccess(profile, requestIfMissing = false) {
+  const apiKey = (profile.openAIApiKey || '').trim();
+  const isCustom = profile.apiProvider === 'custom';
+  if (!apiKey && !isCustom) return true;
+
+  const origin = getApiAccessPattern(profile);
+  const originUrl = new URL(origin.replace(/\*$/, ''));
+  if (!apiKey && !isLocalApiUrl(originUrl)) {
+    throw new Error(t('api.errorMissingKey'));
+  }
+  if (!chrome.permissions?.contains) return true;
+  if (requestIfMissing) {
+    try {
+      // Call request directly from the click handler path so Chrome retains the user gesture.
+      const granted = await chrome.permissions.request({ origins: [origin] });
+      if (!granted) throw new Error(t('api.permissionDenied'));
+      return true;
+    } catch (error) {
+      if (error.message === t('api.permissionDenied')) throw error;
+      throw new Error(t('api.unsupportedHost', { host: originUrl.hostname }));
+    }
+  }
+
+  return chrome.permissions.contains({ origins: [origin] });
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
   // Load language first so all subsequent renders use it
@@ -29,13 +101,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.addEventListener('languageChanged', (e) => {
     setLanguage(e.detail);
     updateStaticUI();
-    const settingsLang = document.getElementById('settings-language');
+    const settingsLang = document.getElementById('lang-select');
     if (settingsLang) settingsLang.value = e.detail;
   });
 });
 
 // Update static UI elements with current language
 function updateStaticUI() {
+  document.documentElement.lang = getLanguage();
+  document.documentElement.dir = getLanguage() === 'ar' ? 'rtl' : 'ltr';
+
   // Tab labels (text nodes only, preserve SVG icons)
   const tabAnalysis = document.getElementById('tab-analysis');
   const tabHistory = document.getElementById('tab-history');
@@ -49,6 +124,17 @@ function updateStaticUI() {
   const emptyDesc = document.querySelector('#empty-state p');
   if (emptyTitle) emptyTitle.textContent = t('ui.emptyTitle');
   if (emptyDesc) emptyDesc.textContent = t('ui.emptyDesc');
+
+  const emptyReadyLabel = document.getElementById('empty-ready-label');
+  const emptyStepOpen = document.getElementById('empty-step-open');
+  const emptyStepScore = document.getElementById('empty-step-score');
+  const emptyStepReturn = document.getElementById('empty-step-return');
+  const openUpworkJobsLabel = document.getElementById('open-upwork-jobs-label');
+  if (emptyReadyLabel) emptyReadyLabel.textContent = t('ui.emptyReady');
+  if (emptyStepOpen) emptyStepOpen.textContent = t('ui.emptyStepOpen');
+  if (emptyStepScore) emptyStepScore.textContent = t('ui.emptyStepScore');
+  if (emptyStepReturn) emptyStepReturn.textContent = t('ui.emptyStepReturn');
+  if (openUpworkJobsLabel) openUpworkJobsLabel.textContent = t('ui.openUpworkJobs');
   
   const histEmpty = document.querySelector('#history-empty p');
   if (histEmpty) histEmpty.textContent = t('ui.historyEmpty');
@@ -59,7 +145,7 @@ function updateStaticUI() {
   // Footer
   const footer = document.querySelector('footer p');
   if (footer) {
-    footer.innerHTML = `${t('ui.version')} • Developed by <a href="https://www.aybarsonurlu.com" target="_blank" class="transition-colors hover:text-green-400">Aybars</a> | <a href="https://www.patreon.com/cw/AybarsOnurlu" target="_blank" class="text-orange-400 hover:text-orange-300 font-bold">Patreon 🧡</a> | <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="text-slate-400 hover:text-slate-300 font-bold">GitHub ⭐</a>`;
+    footer.textContent = `${t('ui.version')} • ${t('ui.developedBy')} Aybars`;
   }
   
   // Analysis Panel Headings
@@ -122,6 +208,7 @@ function updateStaticUI() {
       if (opts[i].value === 'auto') opts[i].textContent = t('ui.apiProvAuto');
       else if (opts[i].value === 'openai') opts[i].textContent = t('ui.apiProvOpenAI');
       else if (opts[i].value === 'gemini') opts[i].textContent = t('ui.apiProvGemini');
+      else if (opts[i].value === 'groq') opts[i].textContent = t('ui.apiProvGroq');
       else if (opts[i].value === 'custom') opts[i].textContent = t('ui.apiProvCustom');
     }
   }
@@ -160,12 +247,20 @@ function updateStaticUI() {
   
   const apiModelInput = document.getElementById('api-model');
   if (apiModelInput) apiModelInput.placeholder = t('ui.apiModelPlaceholder');
+
+  const modelLoading = document.getElementById('model-loading');
+  if (modelLoading) modelLoading.textContent = t('ui.modelLoading');
   
   const apiKeyLabel = document.querySelector('label[for="api-key"]');
   if (apiKeyLabel) setTabText(apiKeyLabel, t('ui.apiKey'));
   
   const apiTrustMsg = document.getElementById('api-trust-msg');
-  if (apiTrustMsg) apiTrustMsg.innerHTML = t('ui.apiTrustMsg');
+  if (apiTrustMsg) {
+    apiTrustMsg.innerHTML = t('ui.apiTrustMsg');
+    apiTrustMsg.querySelectorAll('a').forEach((link) => {
+      link.rel = 'noopener noreferrer';
+    });
+  }
   
   const aiModeLabel = document.querySelector('label[for="ai-mode"]');
   if (aiModeLabel) aiModeLabel.textContent = t('ui.aiAnalysisMode');
@@ -234,15 +329,21 @@ function initTabs() {
 async function initTheme() {
   const profile = await StorageHelper.getUserProfile();
   setTheme(profile.theme || 'auto');
+
+  systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  systemThemeQuery.addEventListener?.('change', () => {
+    if (currentTheme === 'auto') setTheme('auto');
+  });
   
   document.getElementById('theme-toggle').addEventListener('click', () => {
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
     setTheme(nextTheme);
-    StorageHelper.saveUserProfile({ ...currentSettings, theme: nextTheme });
+    StorageHelper.saveUserProfile({ theme: nextTheme });
   });
 }
 
 function setTheme(theme) {
+  if (!['auto', 'light', 'dark'].includes(theme)) theme = 'auto';
   currentTheme = theme;
   const isDark = theme === 'dark' || (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
   
@@ -252,6 +353,7 @@ function setTheme(theme) {
   document.body.classList.toggle('text-slate-200', isDark);
   document.body.classList.toggle('bg-slate-50', !isDark);
   document.body.classList.toggle('text-slate-800', !isDark);
+  document.documentElement.dataset.resolvedTheme = isDark ? 'dark' : 'light';
   
   document.getElementById('theme-icon-dark').classList.toggle('hidden', !isDark);
   document.getElementById('theme-icon-light').classList.toggle('hidden', isDark);
@@ -285,8 +387,8 @@ function renderAnalysis(data) {
   content.classList.remove('hidden');
   
   // Header
-  document.getElementById('job-title').textContent = data.jobTitle;
-  document.getElementById('job-link').href = data.jobUrl;
+  document.getElementById('job-title').textContent = data.jobTitle || t('ui.untitledJob');
+  document.getElementById('job-link').href = safeUpworkUrl(data.jobUrl);
   
   // Score
   document.getElementById('score-value').textContent = data.overallScore;
@@ -323,6 +425,7 @@ function renderAnalysis(data) {
       startAiBtn.disabled = true;
       startAiBtn.textContent = t('ui.aiAnalyzing');
       try {
+        await ensureApiAccess(currentSettings || await StorageHelper.getUserProfile(), true);
         const response = await chrome.runtime.sendMessage({ type: MSG.RUN_AI_ANALYSIS, data: data });
         if (response && response.success && response.analysis) {
           renderAnalysis(response.analysis);
@@ -330,7 +433,7 @@ function renderAnalysis(data) {
           throw new Error(response.error || 'Unknown error');
         }
       } catch (err) {
-        aiSummaryContent.textContent = 'Error: ' + err.message;
+        aiSummaryContent.textContent = t('cv.errorApi', { error: err.message });
         startAiBtn.disabled = false;
         startAiBtn.textContent = t('ui.aiTryAgain');
       }
@@ -375,8 +478,8 @@ function renderRedFlags(flags) {
     <div class="flex items-start gap-2 p-2 rounded bg-slate-800/50 border border-slate-700">
       <span class="text-xs mt-0.5">${getSeverityIcon(flag.severity)}</span>
       <div>
-        <div class="text-xs font-medium text-slate-200">${flag.title}</div>
-        <div class="text-[10px] text-slate-400 mt-0.5">${flag.description}</div>
+        <div class="text-xs font-medium text-slate-200">${escapeHtml(flag.title)}</div>
+        <div class="text-[10px] text-slate-400 mt-0.5">${escapeHtml(flag.description)}</div>
       </div>
     </div>
   `).join('');
@@ -395,8 +498,8 @@ function renderGreenFlags(flags) {
     <div class="flex items-center gap-1.5 text-xs text-slate-300">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="text-green-500 inline-block shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
       <div>
-        <span class="font-medium text-slate-200">${flag.title}</span>: 
-        <span class="text-slate-400">${flag.description}</span>
+        <span class="font-medium text-slate-200">${escapeHtml(flag.title)}</span>:
+        <span class="text-slate-400">${escapeHtml(flag.description)}</span>
       </div>
     </div>
   `).join('');
@@ -405,13 +508,13 @@ function renderGreenFlags(flags) {
 function renderBudgetAnalysis(data) {
   document.getElementById('budget-score').textContent = data.score + '/100';
   document.getElementById('budget-label').textContent = data.label;
-  document.getElementById('budget-details').innerHTML = data.details.map(d => `<div class="flex items-start mt-1.5">${d}</div>`).join('');
+  renderPlainDetails('budget-details', data.details);
 }
 
 function renderClientAnalysis(data) {
   document.getElementById('client-score').textContent = data.score + '/100';
   document.getElementById('client-label').textContent = data.label;
-  document.getElementById('client-details').innerHTML = data.details.map(d => `<div class="flex items-start mt-1.5">${d}</div>`).join('');
+  renderPlainDetails('client-details', data.details);
 }
 
 function renderSkillMatch(data) {
@@ -441,11 +544,11 @@ function renderSkillMatch(data) {
   let html = '';
   
   data.matched.forEach(skill => {
-    html += `<span class="px-2 py-1 text-[10px] font-medium rounded-md bg-green-500/20 text-green-400 border border-green-500/30">${skill}</span>`;
+    html += `<span class="px-2 py-1 text-[10px] font-medium rounded-md bg-green-500/20 text-green-400 border border-green-500/30">${escapeHtml(skill)}</span>`;
   });
   
   data.unmatched.forEach(skill => {
-    html += `<span class="px-2 py-1 text-[10px] rounded-md bg-slate-700 text-slate-400 border border-slate-600">${skill}</span>`;
+    html += `<span class="px-2 py-1 text-[10px] rounded-md bg-slate-700 text-slate-400 border border-slate-600">${escapeHtml(skill)}</span>`;
   });
   
   tagsContainer.innerHTML = html;
@@ -469,7 +572,12 @@ async function loadHistory() {
   
   list.innerHTML = history.map(item => {
     // Safely parse date and format it automatically in the user's OS locale/timezone
-    const time = new Date(item.analyzedAt).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const time = new Date(item.analyzedAt).toLocaleString(DATE_LOCALES[getLanguage()] || 'en-US', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
 
     const colorClass = getScoreColorClass(item.overallScore);
     const labelText = getScoreLabel(item.scoreLabel);
@@ -479,13 +587,13 @@ async function loadHistory() {
     return `
       <div class="relative block p-3 rounded-xl bg-slate-800/40 border border-slate-700/50 hover:border-slate-600 transition-colors group">
         <div class="flex items-start justify-between gap-3">
-          <a href="${item.jobUrl}" target="_blank" class="flex-1 min-w-0">
-            <h4 class="text-xs font-semibold text-slate-200 truncate">${item.jobTitle || untitledJob}</h4>
-            <div class="text-[10px] text-slate-500 mt-1">${time}</div>
+          <a href="${safeUpworkUrl(item.jobUrl)}" target="_blank" rel="noopener noreferrer" class="flex-1 min-w-0">
+            <h4 class="text-xs font-semibold text-slate-200 truncate">${escapeHtml(item.jobTitle || untitledJob)}</h4>
+            <div class="text-[10px] text-slate-500 mt-1">${escapeHtml(time)}</div>
           </a>
           <div class="flex-shrink-0 flex flex-col items-end gap-1">
             <div class="flex items-center gap-2">
-              <button data-job-id="${item.jobId}" class="delete-history-btn p-1 text-slate-500 hover:text-red-400 hover:bg-slate-700/50 rounded-md opacity-0 group-hover:opacity-100 transition-all focus:outline-none z-10" title="Delete">
+              <button data-job-id="${escapeHtml(item.jobId)}" class="delete-history-btn p-1 text-slate-500 hover:text-red-400 hover:bg-slate-700/50 rounded-md opacity-0 group-hover:opacity-100 transition-all focus:outline-none z-10" title="${escapeHtml(t('ui.deleteHistory'))}" aria-label="${escapeHtml(t('ui.deleteHistory'))}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
               </button>
               <span class="text-lg font-bold ${colorClass}">${item.overallScore}</span>
@@ -578,13 +686,13 @@ async function loadSettings() {
 }
 
 async function populateModelsList() {
-  const apiKeyEl = document.getElementById('openai-api-key');
+  const apiKeyEl = document.getElementById('api-key');
   const apiProviderEl = document.getElementById('api-provider');
   const apiBaseUrlEl = document.getElementById('api-base-url');
   const datalist = document.getElementById('models-list');
   const loadingIndicator = document.getElementById('model-loading');
   
-  if (!apiKeyEl || !apiKeyEl.value.trim() || !datalist || !loadingIndicator) return;
+  if (!apiKeyEl || !datalist || !loadingIndicator) return;
   
   const apiKey = apiKeyEl.value.trim();
   const provider = apiProviderEl ? apiProviderEl.value : 'auto';
@@ -592,9 +700,17 @@ async function populateModelsList() {
   // Try to infer provider if auto
   let realProvider = provider;
   let baseUrl = apiBaseUrlEl ? apiBaseUrlEl.value.trim() : 'https://api.openai.com/v1/chat/completions';
+
+  if (!apiKey) {
+    try {
+      if (provider !== 'custom' || !isLocalApiUrl(new URL(baseUrl))) return;
+    } catch {
+      return;
+    }
+  }
   
   if (provider === 'auto') {
-    if (apiKey.startsWith('AIza')) realProvider = 'gemini';
+    if (apiKey.startsWith('AIza') || apiKey.startsWith('AQ.')) realProvider = 'gemini';
     else if (apiKey.startsWith('gsk_')) {
       realProvider = 'groq';
       baseUrl = 'https://api.groq.com/openai/v1/chat/completions';
@@ -602,6 +718,17 @@ async function populateModelsList() {
       realProvider = 'openai';
     }
   }
+
+  if (realProvider === 'groq' && (!baseUrl || baseUrl.includes('api.openai.com'))) {
+    baseUrl = 'https://api.groq.com/openai/v1/chat/completions';
+  }
+
+  const accessProfile = {
+    openAIApiKey: apiKey,
+    apiProvider: provider,
+    apiBaseUrl: baseUrl
+  };
+  if (!(await ensureApiAccess(accessProfile, false))) return;
   
   loadingIndicator.classList.remove('hidden');
   
@@ -626,8 +753,8 @@ function addSkillChip(skill, container, inputEl) {
   const chip = document.createElement('div');
   chip.className = 'skill-tag-chip flex items-center gap-1 px-2 py-1 bg-slate-700 rounded text-xs text-slate-200';
   chip.innerHTML = `
-    <span>${skill}</span>
-    <button class="hover:text-red-400 focus:outline-none">&times;</button>
+    <span>${escapeHtml(skill)}</span>
+    <button type="button" class="hover:text-red-400 focus:outline-none" aria-label="${escapeHtml(t('ui.removeSkill'))}">&times;</button>
   `;
   chip.dataset.skill = skill;
   
@@ -690,13 +817,15 @@ function initSettingsEvents() {
         const apiProvider = document.getElementById('api-provider')?.value;
         
         // Use current input values for ad-hoc parse
-        const extracted = await extractSkillsFromCV(cvText, {
+        const aiProfile = {
           ...tempProfile,
           openAIApiKey: apiKey || tempProfile.openAIApiKey,
           apiBaseUrl: apiBaseUrl || tempProfile.apiBaseUrl,
           apiModel: apiModel || tempProfile.apiModel,
           apiProvider: apiProvider || tempProfile.apiProvider || 'auto'
-        });
+        };
+        await ensureApiAccess(aiProfile, true);
+        const extracted = await extractSkillsFromCV(cvText, aiProfile);
         
         // Expected "React, Node.js, HTML..."
         const newSkills = extracted.split(',').map(s => s.trim()).filter(s => s);
@@ -723,8 +852,8 @@ function initSettingsEvents() {
   
   document.getElementById('save-settings').onclick = async () => {
     const skills = Array.from(document.querySelectorAll('.skill-tag-chip')).map(el => el.dataset.skill);
-    const minHourly = parseFloat(document.getElementById('min-hourly').value) || 0;
-    const minFixed = parseFloat(document.getElementById('min-fixed').value) || 0;
+    const minHourly = Math.max(0, parseFloat(document.getElementById('min-hourly').value) || 0);
+    const minFixed = Math.max(0, parseFloat(document.getElementById('min-fixed').value) || 0);
     const openAIApiKey = document.getElementById('api-key')?.value || '';
     const apiBaseUrl = document.getElementById('api-base-url')?.value || 'https://api.openai.com/v1/chat/completions';
     const apiModel = document.getElementById('api-model')?.value || '';
@@ -735,7 +864,7 @@ function initSettingsEvents() {
     // Apply language change
     setLanguage(selectedLang);
     
-    currentSettings = {
+    const nextSettings = {
       ...currentSettings,
       skills,
       minimumHourlyRate: minHourly,
@@ -747,8 +876,17 @@ function initSettingsEvents() {
       apiProvider,
       aiAnalysisMode
     };
-    
+
+    try {
+      await ensureApiAccess(nextSettings, true);
+    } catch (error) {
+      alert(error.message);
+      return;
+    }
+
+    currentSettings = nextSettings;
     await StorageHelper.saveUserProfile(currentSettings);
+    await populateModelsList();
     
     const sysSettings = await StorageHelper.getSettings();
     await StorageHelper.saveSettings({ ...sysSettings, language: selectedLang });
@@ -817,6 +955,41 @@ function listenForStorageChanges() {
 }
 
 // Helpers
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function safeUpworkUrl(value) {
+  try {
+    const url = new URL(value);
+    const isUpwork = url.hostname === 'upwork.com' || url.hostname.endsWith('.upwork.com');
+    if (url.protocol === 'https:' && isUpwork) return url.href;
+  } catch {
+    // Fall through to the safe Upwork landing page.
+  }
+  return 'https://www.upwork.com/freelance-jobs/';
+}
+
+function renderPlainDetails(containerId, details = []) {
+  const container = document.getElementById(containerId);
+  container.replaceChildren();
+
+  details.forEach((detail) => {
+    const row = document.createElement('div');
+    row.className = 'flex items-start mt-1.5';
+    row.textContent = String(detail ?? '')
+      .replace(/<svg[\s\S]*?<\/svg>/gi, '')
+      .replace(/<[^>]+>/g, '')
+      .trim();
+    container.appendChild(row);
+  });
+}
+
 function getScoreLabel(label) {
   const map = { 'high-risk': t('score.highRisk'), 'caution': t('score.caution'), 'decent': t('score.decent'), 'good': t('score.good') };
   return map[label] || label;

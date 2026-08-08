@@ -5,25 +5,43 @@
 import { t, getLanguage } from './i18n.js';
 
 // Cache resolved model names to avoid hitting the models list API every single call
-const modelCache = {
-  gemini: { name: null, expiry: 0 },
-  openai: { name: null, expiry: 0 },
-  groq: { name: null, expiry: 0 },
-  custom: { name: null, expiry: 0 }
-};
+const modelCache = new Map();
 const MODEL_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
-function getCachedModel(provider) {
-  const entry = modelCache[provider];
+function buildHeaders(apiKey, includeJson = false) {
+  const headers = {};
+  if (includeJson) headers['Content-Type'] = 'application/json';
+  if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
+  return headers;
+}
+
+function isLocalCustomEndpoint(provider, baseUrl) {
+  if (provider !== 'custom') return false;
+  try {
+    const url = new URL(baseUrl);
+    return url.protocol === 'http:' && (url.hostname === 'localhost' || url.hostname === '127.0.0.1');
+  } catch {
+    return false;
+  }
+}
+
+function getModelCacheKey(provider, baseUrl) {
+  return provider === 'custom' ? `${provider}:${baseUrl || ''}` : provider;
+}
+
+function getCachedModel(provider, baseUrl) {
+  const entry = modelCache.get(getModelCacheKey(provider, baseUrl));
   if (entry && entry.name && Date.now() < entry.expiry) {
-    console.log(`[UJA] Using cached model for ${provider}: ${entry.name}`);
     return entry.name;
   }
   return null;
 }
 
-function setCachedModel(provider, name) {
-  modelCache[provider] = { name, expiry: Date.now() + MODEL_CACHE_TTL };
+function setCachedModel(provider, name, baseUrl) {
+  modelCache.set(getModelCacheKey(provider, baseUrl), {
+    name,
+    expiry: Date.now() + MODEL_CACHE_TTL
+  });
 }
 
 async function fetchWithRetry(url, options, maxRetries = 2) {
@@ -76,7 +94,7 @@ export async function fetchAvailableModels(apiProvider, baseUrl, apiKey) {
       
       const res = await fetch(modelsUrl, {
         method: 'GET',
-        headers: { 'Authorization': `Bearer ${apiKey}` }
+        headers: buildHeaders(apiKey)
       });
       if (!res.ok) return [];
       const data = await res.json();
@@ -96,7 +114,7 @@ export async function fetchAvailableModels(apiProvider, baseUrl, apiKey) {
 
 async function getBestModel(apiProvider, baseUrl, apiKey) {
   // Check cache first
-  const cached = getCachedModel(apiProvider);
+  const cached = getCachedModel(apiProvider, baseUrl);
   if (cached) return cached;
   
   try {
@@ -129,7 +147,6 @@ async function getBestModel(apiProvider, baseUrl, apiKey) {
       
       models.sort((a, b) => b.localeCompare(a));
       const best = models.find(m => m.includes('flash') && !m.includes('thinking')) || models[0];
-      console.log('[UJA] Gemini best model selected:', best);
       setCachedModel('gemini', best);
       return best;
     } else {
@@ -139,7 +156,7 @@ async function getBestModel(apiProvider, baseUrl, apiKey) {
       
       const res = await fetch(modelsUrl, {
         method: 'GET',
-        headers: { 'Authorization': `Bearer ${apiKey}` }
+        headers: buildHeaders(apiKey)
       });
       
       if (!res.ok) return null;
@@ -166,7 +183,7 @@ async function getBestModel(apiProvider, baseUrl, apiKey) {
                    chatModels.find(m => m === 'gpt-4o') || 
                    chatModels.find(m => m === 'gpt-3.5-turbo') || 
                    chatModels[0];
-      setCachedModel(apiProvider, best);
+      setCachedModel(apiProvider, best, baseUrl);
       return best;
     }
   } catch (err) {
@@ -181,7 +198,7 @@ export async function callAI(messages, profile) {
   let apiModel = (profile.apiModel || '').trim();
   let apiProvider = profile.apiProvider || 'auto';
   
-  if (!openAIApiKey) {
+  if (!openAIApiKey && !isLocalCustomEndpoint(apiProvider, apiBaseUrl)) {
     throw new Error(t('api.errorMissingKey') || 'API Key missing. Please enter it in Settings.');
   }
 
@@ -223,8 +240,6 @@ async function callGemini(messages, apiKey, apiModel) {
   
   if (!modelToUse) modelToUse = 'gemini-2.0-flash';
   
-  console.log('[UJA] Calling Gemini with model:', modelToUse);
-  
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelToUse}:generateContent?key=${apiKey}`;
   
   // Build Gemini-native format with system instruction
@@ -265,7 +280,8 @@ async function callGemini(messages, apiKey, apiModel) {
       throw new Error(t('api.errorAuth', { provider: 'Gemini' }) || 'Gemini API Auth error. Check your API Key.');
     }
     if (res.status === 400) {
-      throw new Error(`Gemini API Hatası: ${errorDetail || 'Geçersiz istek (400). Model adını kontrol edin.'}`);
+      const genericMsg = t('api.errorGeneric', { provider: 'Gemini' }) || 'Gemini API Error: {{status}} {{text}}';
+      throw new Error(genericMsg.replace('{{status}}', res.status).replace('{{text}}', errorDetail || res.statusText));
     }
     if (res.status === 429) {
       throw new Error(t('api.errorQuota', { provider: 'Gemini' }) || 'Gemini API Quota Exceeded (429).');
@@ -277,7 +293,7 @@ async function callGemini(messages, apiKey, apiModel) {
   const data = await res.json();
   
   if (data.promptFeedback?.blockReason) {
-    throw new Error(`Gemini içerik engeli: ${data.promptFeedback.blockReason}`);
+    throw new Error(`${t('api.errorInvalidResponse') || 'Invalid Gemini API response.'} (${data.promptFeedback.blockReason})`);
   }
   
   if (data.candidates && data.candidates.length > 0 && data.candidates[0].content?.parts?.length > 0) {
@@ -303,10 +319,7 @@ async function callOpenAICompatible(messages, apiKey, apiBaseUrl, apiModel, apiP
   
   const res = await fetchWithRetry(apiBaseUrl, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
+    headers: buildHeaders(apiKey, true),
     body: JSON.stringify(payload)
   });
   
@@ -315,7 +328,7 @@ async function callOpenAICompatible(messages, apiKey, apiBaseUrl, apiModel, apiP
     let parsedError;
     try { parsedError = JSON.parse(errorData); } catch (e) {}
     
-    const provName = apiProvider === 'groq' ? 'Groq' : 'OpenAI';
+    const provName = apiProvider === 'groq' ? 'Groq' : (apiProvider === 'custom' ? 'Custom API' : 'OpenAI');
 
     if (res.status === 401 || res.status === 403) {
       throw new Error(t('api.errorAuth', { provider: provName }) || `API Auth error. Check your API Key.`);
@@ -338,13 +351,13 @@ async function callOpenAICompatible(messages, apiKey, apiBaseUrl, apiModel, apiP
 }
 
 export async function extractSkillsFromCV(cvText, profile) {
-  const langMap = { tr: 'Türkçe', en: 'İngilizce', de: 'Almanca', fr: 'Fransızca', es: 'İspanyolca', pt: 'Portekizce', ar: 'Arapça' };
+  const langMap = { tr: 'Turkish', en: 'English', de: 'German', fr: 'French', es: 'Spanish', pt: 'Portuguese', ar: 'Arabic' };
   const currentLang = getLanguage();
-  const langName = langMap[currentLang] || 'İngilizce';
+  const langName = langMap[currentLang] || 'English';
   const messages = [
     { 
       role: 'system', 
-      content: `Sen uzman bir İK asistanısın. Verilen CV metnini analiz et ve aday için en önemli 10 teknik yeteneği çıkar. Sadece bu yetenekleri aralarında virgül olacak şekilde tek bir satır olarak döndür. Hiçbir ek açıklama, giriş veya çıkış cümlesi kullanma. LÜTFEN YETENEKLERİ ${langName} DİLİNDE VEYA ORİJİNAL TEKNİK ADIYLA YAZ!` 
+      content: `You are an expert technical recruiter. Extract the candidate's 10 most important technical skills from the CV. Return only one comma-separated line with no introduction or explanation. Write skills in ${langName} or preserve their original technical names.`
     },
     { 
       role: 'user', 
