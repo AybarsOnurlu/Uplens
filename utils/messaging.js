@@ -21,7 +21,6 @@ export const MSG = {
   UPDATE_SETTINGS: 'UPDATE_SETTINGS',
   GET_USER_PROFILE: 'GET_USER_PROFILE',
   UPDATE_USER_PROFILE: 'UPDATE_USER_PROFILE',
-  VERIFY_LICENSE: 'VERIFY_LICENSE',
   REANALYZE_ALL: 'REANALYZE_ALL',
   RUN_AI_ANALYSIS: 'RUN_AI_ANALYSIS'
 };
@@ -39,7 +38,7 @@ export async function sendToBackground(type, data = null) {
     const response = await chrome.runtime.sendMessage({ type, data });
     return response;
   } catch (error) {
-    console.error(`[UJA] Background'a mesaj gönderilemedi (${type}):`, error);
+    console.error(`[UpLens] Could not send message to background (${type}):`, error);
     return { success: false, error: error.message };
   }
 }
@@ -58,7 +57,7 @@ export async function sendToTab(tabId, type, data = null) {
     const response = await chrome.tabs.sendMessage(tabId, { type, data });
     return response;
   } catch (error) {
-    console.error(`[UJA] Tab'a mesaj gönderilemedi (tabId: ${tabId}, ${type}):`, error);
+    console.error(`[UpLens] Could not send message to tab (tabId: ${tabId}, ${type}):`, error);
     return { success: false, error: error.message };
   }
 }
@@ -75,11 +74,11 @@ export async function sendToActiveTab(type, data = null) {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (!tab?.id) {
-      throw new Error('Aktif sekme bulunamadı');
+      throw new Error('No active tab found');
     }
     return sendToTab(tab.id, type, data);
   } catch (error) {
-    console.error(`[UJA] Aktif tab'a mesaj gönderilemedi (${type}):`, error);
+    console.error(`[UpLens] Could not send message to active tab (${type}):`, error);
     return { success: false, error: error.message };
   }
 }

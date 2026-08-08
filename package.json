@@ -1,0 +1,12 @@
+{
+  "name": "uplens-extension",
+  "version": "1.0.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/node/*.test.mjs",
+    "validate": "node scripts/validate-extension.mjs",
+    "check": "npm test && npm run validate",
+    "build:store": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build-store.ps1"
+  }
+}

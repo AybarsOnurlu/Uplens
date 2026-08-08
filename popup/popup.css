@@ -25,13 +25,35 @@ body {
   transition: background-color 0.3s, color 0.3s;
 }
 
+body.dark {
+  color-scheme: dark;
+  --tour-surface: #1e293b;
+  --tour-surface-muted: #0f172a;
+  --tour-text: #f1f5f9;
+  --tour-muted: #cbd5e1;
+  --tour-border: #475569;
+  --ready-surface: rgba(30, 41, 59, 0.55);
+  --ready-border: #334155;
+}
+
+body.light {
+  color-scheme: light;
+  --tour-surface: #ffffff;
+  --tour-surface-muted: #f8fafc;
+  --tour-text: #1e293b;
+  --tour-muted: #475569;
+  --tour-border: #cbd5e1;
+  --ready-surface: #ffffff;
+  --ready-border: #cbd5e1;
+}
+
 /* Base input fixes (in case Tailwind didn't generate bg-slate-800/50) */
-input, select {
+input, select, textarea {
   background-color: rgba(30, 41, 59, 0.5); /* bg-slate-800/50 */
   color: #f8fafc;
   border-color: #334155; /* border-slate-700 */
 }
-input::placeholder {
+input::placeholder, textarea::placeholder {
   color: #64748b; /* text-slate-500 */
 }
 
@@ -89,14 +111,51 @@ input::placeholder {
 .light .bg-slate-700 { background-color: #e2e8f0; color: #334155; }
 
 /* Input fields fix for light mode (ensure they don't look broken) */
-.light input, .light select {
+.light input, .light select, .light textarea {
   background-color: #ffffff;
   color: #0f172a;
   border-color: #cbd5e1;
 }
 
-.light input::placeholder {
+.light input::placeholder, .light textarea::placeholder {
   color: #94a3b8;
+}
+
+.popup-ready-card {
+  background: var(--ready-surface);
+  border-color: var(--ready-border);
+}
+
+.popup-ready-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.14);
+}
+
+.empty-step-number {
+  display: inline-flex;
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgba(34, 197, 94, 0.14);
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.empty-primary-action {
+  background: #14a800;
+  color: #ffffff !important;
+  text-decoration: none;
+}
+
+.empty-primary-action:hover,
+.empty-primary-action:focus-visible {
+  background: #108a00;
 }
 
 /* Active Tab Distinctiveness */
@@ -228,27 +287,61 @@ input::placeholder {
 }
 
 
-/* 
- * Robust Tour Theme Override (Bypasses Tailwind purge/cache)
- */
-
-/* Light Mode (Default - White bg, Dark text) */
-.tour-lang-box, .tour-tooltip { 
-    background-color: #ffffff !important;
-    color: #1e293b !important;
-    border-color: #e2e8f0 !important;
+/* Product tour theme. Explicit variables avoid Tailwind purge/override issues. */
+.tour-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(2, 6, 23, 0.72);
 }
-.tour-lang-box h2, .tour-lang-box select { color: #1e293b !important; }
-.tour-lang-box select { background-color: #f8fafc !important; border-color: #e2e8f0 !important; }
-.tour-lang-box p, #tour-skip, #tour-indicator { color: #475569 !important; }
 
-/* Dark Mode (When body has 'dark' class) */
-body.dark .tour-lang-box,
-body.dark .tour-tooltip {
-    background-color: #1e293b !important;
-    color: #f1f5f9 !important;
-    border-color: #475569 !important;
+.tour-lang-box,
+.tour-tooltip {
+  position: absolute;
+  z-index: 101 !important;
+  box-sizing: border-box;
+  background-color: var(--tour-surface) !important;
+  color: var(--tour-text) !important;
+  border-color: var(--tour-border) !important;
 }
-body.dark .tour-lang-box h2, body.dark .tour-lang-box select { color: #ffffff !important; }
-body.dark .tour-lang-box select { background-color: #0f172a !important; border-color: #334155 !important; }
-body.dark .tour-lang-box p, body.dark #tour-skip, body.dark #tour-indicator { color: #cbd5e1 !important; }
+
+.tour-lang-box {
+  max-width: calc(100vw - 32px);
+}
+
+.tour-lang-box h2,
+.tour-tooltip #tour-text {
+  color: var(--tour-text) !important;
+}
+
+.tour-lang-box p,
+#tour-skip,
+#tour-indicator,
+#tour-lang-skip {
+  color: var(--tour-muted) !important;
+}
+
+.tour-lang-box select {
+  color: var(--tour-text) !important;
+  background-color: var(--tour-surface-muted) !important;
+  border-color: var(--tour-border) !important;
+}
+
+.tour-primary-button {
+  color: #ffffff !important;
+  background: #2563eb !important;
+}
+
+.tour-primary-button:hover,
+.tour-primary-button:focus-visible {
+  background: #1d4ed8 !important;
+}
+
+#tour-next.tour-primary-button {
+  background: #16a34a !important;
+}
+
+#tour-next.tour-primary-button:hover,
+#tour-next.tour-primary-button:focus-visible {
+  background: #15803d !important;
+}

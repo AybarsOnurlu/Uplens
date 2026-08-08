@@ -17,14 +17,12 @@ if (document.readyState === 'loading') {
 }
 
 function init() {
-  console.log('[UJA] Content script initialized on', window.location.href);
   setupMutationObserver();
   scheduleExtraction();
   
   // Listen for settings change
   chrome.runtime.onMessage.addListener((message) => {
     if (message.type === 'REANALYZE_PAGE') {
-      console.log('[UJA] Settings changed, re-analyzing page...');
       document.querySelectorAll('[data-uja-processed]').forEach(el => delete el.dataset.ujaProcessed);
       document.querySelectorAll('.uja-inline-badge').forEach(el => el.remove());
       scheduleExtraction();
@@ -78,6 +76,7 @@ function scheduleExtraction() {
 let extractionTries = 0;
 function extractAndAnalyze() {
   const url = window.location.href;
+  if (url !== lastExtractedUrl) extractionTries = 0;
   lastExtractedUrl = url;
 
   if (url.includes('/jobs/~')) {
@@ -89,14 +88,16 @@ function extractAndAnalyze() {
     }
     extractionTries = 0;
     extractJobDetailPage();
-  } else if (url.includes('/nx/search/jobs/') || url.includes('/nx/find-work/') || url.includes('/ab/jobs/search/')) {
+  } else if (url.includes('/nx/search/jobs/') || url.includes('/nx/find-work/') || url.includes('/ab/jobs/search/') || url.includes('/freelance-jobs/')) {
     extractSearchResults();
   }
 }
 
 // Extract data from search results page
 function extractSearchResults() {
-  const jobListContainer = document.querySelector('[data-test="job-tile-list"]') || document.querySelector('.up-card-list');
+  const jobListContainer = document.querySelector('[data-test="job-tile-list"]')
+    || document.querySelector('.up-card-list')
+    || (window.location.pathname.startsWith('/freelance-jobs/') ? document.querySelector('main') : null);
   if (!jobListContainer) return;
   
   const jobTiles = jobListContainer.querySelectorAll('section, article, .job-tile, .up-card');
@@ -109,6 +110,8 @@ function extractSearchResults() {
     if (!titleLink) return;
     
     const url = titleLink.href;
+    const jobId = extractJobId(url);
+    if (!jobId) return;
     const title = titleLink.textContent.trim();
     
     // Budget
@@ -187,7 +190,7 @@ function extractSearchResults() {
     const proposals = proposalsMatch ? proposalsMatch[1].trim() : null;
     
     const jobData = {
-      id: extractJobId(url), url, title, budget, client, skills, proposals,
+      id: jobId, url, title, budget, client, skills, proposals,
       experienceLevel, projectLength,
       description: tile.querySelector('.job-description-text')?.textContent || '',
       extractedAt: Date.now(), isSearchTile: true
@@ -209,7 +212,7 @@ function injectInlineBadge(tile, analysis, badgeLabels = {}) {
   if (tile.querySelector('.uja-inline-badge')) return;
   
   const { overallScore, redFlags } = analysis;
-  const scoreText = badgeLabels.scoreText || 'Skor';
+  const scoreText = badgeLabels.scoreText || 'Score';
   const riskText = badgeLabels.risk || 'Risk';
   
   let color = '#14a800';
@@ -248,8 +251,6 @@ function injectInlineBadge(tile, analysis, badgeLabels = {}) {
 
 // Extract data from a specific job detail page
 function extractJobDetailPage() {
-  console.log('[UJA] Extracting job details...');
-  
   const jobData = {
     id: extractJobId(window.location.href),
     url: window.location.href,
@@ -264,7 +265,6 @@ function extractJobDetailPage() {
     extractedAt: Date.now()
   };
 
-  console.log('[UJA] Extracted Job Data:', jobData);
   sendForAnalysis(jobData);
 }
 
@@ -287,7 +287,7 @@ function extractTitle() {
   // Robust fallback
   let docTitle = document.title;
   docTitle = docTitle.replace(/\s*-\s*Upwork\s*$/i, '').trim();
-  return docTitle || 'İsimsiz İlan';
+  return docTitle || 'Untitled Job';
 }
 
 function extractDescription() {
@@ -462,7 +462,7 @@ function injectOverlay(analysis, badgeLabels = {}) {
   const { overallScore, redFlags } = analysis;
   const scoreLabel = badgeLabels.scoreLabel || analysis.scoreLabel;
   const riskText = badgeLabels.risk || 'Risk';
-  const cleanText = badgeLabels.clean || 'Temiz';
+  const cleanText = badgeLabels.clean || 'Clean';
   
   let color = '#14a800'; // good
   if (overallScore <= 30) color = '#ef4444'; // high-risk

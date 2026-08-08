@@ -1,5 +1,5 @@
 import { StorageHelper } from '../utils/storage.js';
-import { t } from '../utils/i18n.js';
+import { t, getLanguage, setLanguage } from '../utils/i18n.js';
 
 export async function initTour() {
   const settings = await StorageHelper.getSettings();
@@ -40,19 +40,24 @@ class OnboardingTour {
     this.currentStep = 0;
     this.overlay = null;
     this.tooltip = null;
+    this.languageBox = null;
     this.activeTarget = null;
     this.originalStyles = new Map();
+    this.handleEscape = (event) => {
+      if (event.key === 'Escape') this.end();
+    };
   }
 
   start() {
     this.createOverlay();
     this.createTooltip();
+    document.addEventListener('keydown', this.handleEscape);
     this.showStep();
   }
 
   createOverlay() {
     this.overlay = document.createElement('div');
-    this.overlay.className = 'fixed inset-0 bg-black/70 z-[100] transition-opacity duration-300';
+    this.overlay.className = 'tour-overlay transition-opacity duration-300';
     document.body.appendChild(this.overlay);
   }
 
@@ -63,10 +68,10 @@ class OnboardingTour {
     this.tooltip.innerHTML = `
       <p id="tour-text" class="text-sm mb-4 font-medium leading-relaxed"></p>
       <div class="flex justify-between items-center">
-        <button id="tour-skip" class="text-xs hover:opacity-75 font-medium transition-opacity"></button>
+        <button id="tour-skip" type="button" class="text-xs hover:opacity-75 font-medium transition-opacity"></button>
         <div class="flex items-center gap-2">
           <span id="tour-indicator" class="text-[10px] font-bold"></span>
-          <button id="tour-next" class="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg transition-colors"></button>
+          <button id="tour-next" type="button" class="tour-primary-button px-3 py-1.5 text-xs font-bold rounded-lg transition-colors"></button>
         </div>
       </div>
     `;
@@ -122,6 +127,7 @@ class OnboardingTour {
     this.tooltip.classList.add('opacity-0');
     
     const box = document.createElement('div');
+    this.languageBox = box;
     box.id = 'tour-lang-box';
     box.className = 'tour-lang-box absolute z-[101] border rounded-xl p-6 shadow-2xl flex flex-col items-center justify-center gap-4 pointer-events-auto';
     box.style.top = '50%';
@@ -130,8 +136,8 @@ class OnboardingTour {
     box.style.width = '320px';
 
     box.innerHTML = `
-      <h2 class="text-lg font-bold text-center">${t('ui.tourWelcome') || 'Welcome to UpLens!'}</h2>
-      <p class="text-sm text-center mb-2">${t('ui.tourLangSelect') || 'Please select your language:'}</p>
+      <h2 id="tour-lang-title" class="text-lg font-bold text-center">${t('ui.tourWelcome')}</h2>
+      <p id="tour-lang-prompt" class="text-sm text-center mb-2">${t('ui.tourLangSelect')}</p>
       <select id="tour-lang-select" class="w-full border rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none mb-2">
         <option value="en">English (EN)</option>
         <option value="tr">Türkçe (TR)</option>
@@ -141,23 +147,46 @@ class OnboardingTour {
         <option value="pt">Português (PT)</option>
         <option value="ar">العربية (SA)</option>
       </select>
-      <button id="tour-lang-start" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-lg transition-colors mt-2 flex justify-center items-center">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      <button id="tour-lang-start" type="button" class="tour-primary-button w-full py-3 text-sm font-bold rounded-lg transition-colors mt-2 flex justify-center items-center gap-2">
+        <span id="tour-lang-start-label">${t('ui.tourStart')}</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
       </button>
+      <button id="tour-lang-skip" type="button" class="text-xs underline hover:opacity-75">${t('ui.tourSkipSetup')}</button>
     `;
     
     document.body.appendChild(box);
+    const languageSelect = document.getElementById('tour-lang-select');
+    languageSelect.value = getLanguage();
+
+    const refreshLanguageBox = (language) => {
+      setLanguage(language);
+      document.getElementById('tour-lang-title').textContent = t('ui.tourWelcome');
+      document.getElementById('tour-lang-prompt').textContent = t('ui.tourLangSelect');
+      document.getElementById('tour-lang-start-label').textContent = t('ui.tourStart');
+      document.getElementById('tour-lang-skip').textContent = t('ui.tourSkipSetup');
+      window.dispatchEvent(new CustomEvent('languageChanged', { detail: language }));
+    };
+
+    languageSelect.addEventListener('change', () => refreshLanguageBox(languageSelect.value));
+
+    document.getElementById('tour-lang-skip').addEventListener('click', async () => {
+      const selectedLang = languageSelect.value;
+      const settings = await StorageHelper.getSettings();
+      await StorageHelper.saveSettings({ ...settings, language: selectedLang });
+      refreshLanguageBox(selectedLang);
+      await this.end();
+    });
 
     document.getElementById('tour-lang-start').addEventListener('click', async () => {
-      const selectedLang = document.getElementById('tour-lang-select').value;
+      const selectedLang = languageSelect.value;
       const settings = await StorageHelper.getSettings();
       await StorageHelper.saveSettings({ ...settings, language: selectedLang });
       
-      // Dispatch event to popup.js to update UI and apply language
-      window.dispatchEvent(new CustomEvent('languageChanged', { detail: selectedLang }));
+      refreshLanguageBox(selectedLang);
       
       // Clean up box and move to next step
       box.remove();
+      this.languageBox = null;
       this.currentStep++;
       this.showStep();
     });
@@ -249,6 +278,8 @@ class OnboardingTour {
     this.clearHighlight();
     if (this.overlay) this.overlay.remove();
     if (this.tooltip) this.tooltip.remove();
+    if (this.languageBox) this.languageBox.remove();
+    document.removeEventListener('keydown', this.handleEscape);
     
     const settings = await StorageHelper.getSettings();
     await StorageHelper.saveSettings({ ...settings, hasSeenTour: true });

@@ -2,24 +2,25 @@
   "manifest_version": 3,
   "name": "UpLens",
   "short_name": "UpLens",
-  "version": "1.0.1",
-  "description": "Analyze Upwork jobs instantly. Detect scams, check client history, and match skills via AI.",
-  "permissions": ["storage", "activeTab"],
+  "version": "1.0.2",
+  "description": "Score Upwork jobs for risk, client quality, budget fit, and skill match. Optional BYOK AI.",
+  "permissions": ["storage"],
   "host_permissions": [
-    "https://*.upwork.com/*",
+    "https://*.upwork.com/*"
+  ],
+  "optional_host_permissions": [
     "https://api.openai.com/*",
     "https://generativelanguage.googleapis.com/*",
     "https://api.groq.com/*",
-    "https://api.anthropic.com/*",
     "https://api.mistral.ai/*",
     "https://api.together.xyz/*",
     "https://openrouter.ai/*",
     "https://api.deepseek.com/*",
     "https://api.perplexity.ai/*",
-    "https://api.cohere.com/*",
     "https://dashscope.aliyuncs.com/*",
-    "https://api-inference.huggingface.co/*",
-    "https://api.x.ai/*"
+    "https://api.x.ai/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
   ],
   "background": {
     "service_worker": "sw.js",

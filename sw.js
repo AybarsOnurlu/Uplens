@@ -4,21 +4,37 @@ import { MSG } from './utils/messaging.js';
 import { setLanguage, t } from './utils/i18n.js';
 import { callAI } from './utils/ai.js';
 
-// Anti-spam & Caching for API protection
-const requestCache = new Map();
-const CACHE_TTL = 60000; // 1 dakika (60,000 ms)
+const AI_LANGUAGE_NAMES = {
+  tr: 'Turkish',
+  en: 'English',
+  de: 'German',
+  fr: 'French',
+  es: 'Spanish',
+  pt: 'Portuguese',
+  ar: 'Arabic'
+};
+
+function hasAIConfiguration(profile) {
+  if ((profile.openAIApiKey || '').trim()) return true;
+  if (profile.apiProvider !== 'custom') return false;
+  try {
+    const url = new URL(profile.apiBaseUrl || '');
+    return url.protocol === 'http:' && (url.hostname === 'localhost' || url.hostname === '127.0.0.1');
+  } catch {
+    return false;
+  }
+}
 
 chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === 'install') {
     await StorageHelper.saveUserProfile(DEFAULT_USER_PROFILE);
-    console.log('[UJA] Extension installed, default settings saved.');
   }
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   handleMessage(message, sender).then(sendResponse).catch(err => {
     console.error('[UJA] Message handler error:', err);
-    sendResponse({ error: err.message });
+    sendResponse({ success: false, error: err.message });
   });
   return true; // Keep channel open for async response
 });
@@ -28,25 +44,6 @@ async function handleMessage(message, sender) {
   
   switch (type) {
     case MSG.ANALYZE_JOB: {
-      const jobId = data.id || 'unknown';
-      
-      // Check Anti-Spam Cache
-      if (jobId !== 'unknown' && requestCache.has(jobId)) {
-        const lastReqTime = requestCache.get(jobId);
-        if (Date.now() - lastReqTime < CACHE_TTL) {
-          console.log(`[UJA] Rate limited: Skipping duplicate request for ${jobId} within 1 minute.`);
-          const existingAnalysis = await StorageHelper.getAnalysisById(jobId);
-          if (existingAnalysis) {
-             return { success: true, analysis: existingAnalysis, cached: true };
-          }
-        }
-      }
-      
-      // Update cache timestamp
-      if (jobId !== 'unknown') {
-        requestCache.set(jobId, Date.now());
-      }
-      
       const profile = await StorageHelper.getUserProfile();
       const settings = await StorageHelper.getSettings();
       // Set language before analysis so strings are in correct language
@@ -62,7 +59,7 @@ async function handleMessage(message, sender) {
           success: true, 
           analysis: result,
           badgeLabels: {
-            scoreText: t('ui.scoreText') || 'Skor',
+            scoreText: t('ui.scoreText') || 'Score',
             risk: t('ui.redFlags') || 'Risk',
             classificationText: t(`score.${i18nLabel}`) || result.scoreLabel
           }
@@ -70,11 +67,13 @@ async function handleMessage(message, sender) {
       }
       
       // Auto AI Analysis (Only for Job Detail Pages)
-      if (profile.aiAnalysisMode === 'auto' && profile.openAIApiKey) {
+      if (profile.aiAnalysisMode === 'auto' && hasAIConfiguration(profile)) {
         try {
-          const langMap = { tr: 'Türkçe', en: 'İngilizce', de: 'Almanca', fr: 'Fransızca', es: 'İspanyolca', pt: 'Portekizce', ar: 'Arapça' };
-          const langName = langMap[settings.language || 'en'] || 'İngilizce';
-          const systemPrompt = `Sen kıdemli bir Upwork ilan analiz botusun. Kullanıcının yetenekleri: ${(profile.skills || []).join(', ')}. Verilen ilanı oku. Sadece 3 kısa madde halinde, 50 kelimeyi geçmeyecek şekilde ilandaki en büyük riskleri ve kullanıcının yetenekleriyle uyuşup uyuşmadığını yaz. Asla gereksiz açıklama yapma. LÜTFEN CEVABINI KESİNLİKLE ${langName} DİLİNDE VER!`;
+          const langName = AI_LANGUAGE_NAMES[settings.language || 'en'] || 'English';
+          const systemPrompt = t('ai.systemPrompt', {
+            skills: (profile.skills || []).join(', '),
+            lang: langName
+          });
           const messages = [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: `Job Title: ${data.title}\nJob Description: ${data.description}` }
@@ -92,8 +91,8 @@ async function handleMessage(message, sender) {
       const badgeLabels = {
         scoreLabel: t('score.' + (result.scoreLabel === 'high-risk' ? 'highRisk' : result.scoreLabel)) || result.scoreLabel,
         risk: t('ui.risk') || 'Risk',
-        clean: t('ui.clean') || 'Temiz',
-        scoreText: t('ui.score') || 'Skor'
+        clean: t('ui.clean') || 'Clean',
+        scoreText: t('ui.score') || 'Score'
       };
       
       return { success: true, analysis: result, badgeLabels };
@@ -108,12 +107,11 @@ async function handleMessage(message, sender) {
       const analysisData = data; // the existing analysis object
       
       try {
-        if (!profile.openAIApiKey) {
+        if (!hasAIConfiguration(profile)) {
           return { success: false, error: t('api.errorMissingKey') || 'API Key is missing.' };
         }
         
-        const langMap = { tr: 'Türkçe', en: 'English', de: 'Deutsch', fr: 'Français', es: 'Español', pt: 'Português', ar: 'العربية' };
-        const langName = langMap[settings.language || 'en'] || 'English';
+        const langName = AI_LANGUAGE_NAMES[settings.language || 'en'] || 'English';
         const systemPrompt = t('ai.systemPrompt', { skills: (profile.skills || []).join(', '), lang: langName });
         const messages = [
           { role: 'system', content: systemPrompt },
@@ -128,7 +126,7 @@ async function handleMessage(message, sender) {
         return { success: true, analysis: analysisData };
       } catch (err) {
         console.error('[UJA] Manual AI fetch error:', err);
-        return { error: err.message };
+        return { success: false, error: err.message };
       }
     }
       
@@ -158,16 +156,8 @@ async function handleMessage(message, sender) {
     case MSG.UPDATE_SETTINGS:
       await StorageHelper.saveUserProfile(data);
       return { success: true };
-    case MSG.VERIFY_LICENSE:
-      try {
-        // License verification is not yet available in the public release.
-        // This feature will be enabled in a future update with a production endpoint.
-        return { success: false, valid: false, error: "License verification is not available yet. Stay tuned for future updates!" };
-      } catch (err) {
-        return { success: false, error: "Connection error: " + err.message };
-      }
     default:
-      return { error: 'Unknown message type: ' + type };
+      return { success: false, error: 'Unknown message type: ' + type };
   }
 }
 
