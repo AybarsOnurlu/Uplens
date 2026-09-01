@@ -53,7 +53,7 @@ export function analyzeBudget(jobData, userProfile) {
 
   if (!budget || (!budget.type && !budget.amount && !budget.min && !budget.max)) {
     if (jobData.isSearchTile) {
-      details.push(`${ICON_WARNING} Bütçe detayı ana sayfada görünmüyor`);
+      details.push(`${ICON_WARNING} ${t('budget.searchInfoUnavailable')}`);
       return {
         score: 50,
         label: scoreToLabel(50),

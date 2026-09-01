@@ -46,10 +46,25 @@
     <!-- PANEL: Analysis -->
     <section id="panel-analysis" class="tab-panel flex-1 p-4 space-y-4">
       <!-- Empty State -->
-      <div id="empty-state" class="flex flex-col items-center justify-center py-12 text-center">
+      <div id="empty-state" class="flex flex-col items-center justify-center py-8 text-center">
         <div class="flex justify-center mb-4 text-slate-400"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
         <h2 class="text-lg font-semibold text-slate-300 mb-2">Waiting for Job Analysis</h2>
         <p class="text-sm text-slate-500 max-w-xs">Navigate to a job posting on Upwork. The extension will analyze it automatically.</p>
+        <div class="popup-ready-card mt-5 w-full max-w-sm rounded-xl border p-4 text-left">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="popup-ready-dot" aria-hidden="true"></span>
+            <span id="empty-ready-label" class="text-xs font-semibold">Popup is ready</span>
+          </div>
+          <ol class="space-y-2 text-xs text-slate-400">
+            <li class="flex gap-2"><span class="empty-step-number">1</span><span id="empty-step-open">Open an Upwork job or search page.</span></li>
+            <li class="flex gap-2"><span class="empty-step-number">2</span><span id="empty-step-score">UpLens calculates a local risk and fit score automatically.</span></li>
+            <li class="flex gap-2"><span class="empty-step-number">3</span><span id="empty-step-return">Return here for details, history, and optional AI analysis.</span></li>
+          </ol>
+          <a id="open-upwork-jobs" href="https://www.upwork.com/freelance-jobs/" target="_blank" rel="noopener noreferrer" class="empty-primary-action mt-4 flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-xs font-bold">
+            <span id="open-upwork-jobs-label">Open Upwork jobs</span>
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
       </div>
       
       <!-- Analysis Content -->
@@ -129,6 +144,8 @@
           </div>
           <div id="skill-tags" class="flex flex-wrap gap-1.5"></div>
           <div id="no-skills-msg" class="hidden text-xs text-slate-500 text-center py-2">Add your skills in settings</div>
+        </div>
+
         <!-- AI Analysis Section -->
         <div id="ai-section" class="analysis-card p-3 rounded-xl hidden">
           <div class="flex items-center justify-between mb-2">
@@ -220,6 +237,7 @@
               <option value="auto">Auto-Detect</option>
               <option value="openai">Official OpenAI (sk-...)</option>
               <option value="gemini">Google Gemini (AIza...)</option>
+              <option value="groq">Groq (gsk_...)</option>
               <option value="custom">Custom Compatible URL</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
@@ -289,12 +307,12 @@
     <!-- Footer -->
     <footer class="px-4 py-3 border-t border-slate-700/30 flex flex-col items-center gap-2">
       <div class="flex items-center gap-3">
-        <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-slate-300 transition-colors">
+        <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-xs font-medium text-slate-400 hover:text-slate-300 transition-colors">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
           GitHub
         </a>
       </div>
-      <p class="text-[10px] text-slate-600">v1.0.0 • Developed by <a href="https://www.aybarsonurlu.com" target="_blank" class="transition-colors hover:text-green-400">Aybars</a> | <a href="https://www.patreon.com/cw/AybarsOnurlu" target="_blank" class="text-orange-400 hover:text-orange-300 font-bold">Patreon 🧡</a> | <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="text-slate-400 hover:text-slate-300 font-bold">GitHub ⭐</a></p>
+      <p class="text-[10px] text-slate-600">v1.0.2 • Developed by Aybars</p>
     </footer>
   </div>
   

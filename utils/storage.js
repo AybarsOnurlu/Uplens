@@ -17,8 +17,6 @@ export const DEFAULT_USER_PROFILE = {
   minimumHourlyRate: 25,
   minimumFixedBudget: 100,
   theme: 'auto',
-  licenseKey: '',
-  isPremium: false,
   openAIApiKey: '',
   aiAnalysisMode: 'auto',
   apiProvider: 'auto',
@@ -88,13 +86,16 @@ export class StorageHelper {
     ]);
 
     let history = result[STORAGE_KEYS.ANALYSIS_HISTORY] || [];
-    const settings = result[STORAGE_KEYS.SETTINGS] || DEFAULT_SETTINGS;
-    const maxItems = settings.maxHistoryItems || MAX_HISTORY_ITEMS;
+    const settings = { ...DEFAULT_SETTINGS, ...(result[STORAGE_KEYS.SETTINGS] || {}) };
+    const configuredMax = Number(settings.maxHistoryItems);
+    const maxItems = Number.isInteger(configuredMax) && configuredMax > 0
+      ? Math.min(configuredMax, MAX_HISTORY_ITEMS)
+      : MAX_HISTORY_ITEMS;
 
     // Aynı iş ilanı zaten varsa güncelle
-    const existingIndex = history.findIndex(
-      item => item.jobId === analysisResult.jobId
-    );
+    const existingIndex = analysisResult.jobId
+      ? history.findIndex(item => item.jobId === analysisResult.jobId)
+      : -1;
 
     if (existingIndex !== -1) {
       history[existingIndex] = analysisResult;
@@ -171,7 +172,7 @@ export class StorageHelper {
    */
   static async getUserProfile() {
     const result = await this._get(STORAGE_KEYS.USER_PROFILE);
-    return result[STORAGE_KEYS.USER_PROFILE] || { ...DEFAULT_USER_PROFILE };
+    return { ...DEFAULT_USER_PROFILE, ...(result[STORAGE_KEYS.USER_PROFILE] || {}) };
   }
 
   /**
@@ -191,7 +192,7 @@ export class StorageHelper {
    */
   static async getSettings() {
     const result = await this._get(STORAGE_KEYS.SETTINGS);
-    return result[STORAGE_KEYS.SETTINGS] || { ...DEFAULT_SETTINGS };
+    return { ...DEFAULT_SETTINGS, ...(result[STORAGE_KEYS.SETTINGS] || {}) };
   }
 
   /**

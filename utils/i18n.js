@@ -12,12 +12,12 @@ export const LANGUAGES = {
 
 let currentLanguage = 'en';
 
-const translations = {
+export const TRANSLATIONS = {
   // ═══════════════════════════════════════════════════════════════════════════
   // TURKISH (tr)
   // ═══════════════════════════════════════════════════════════════════════════
   tr: {
-    api: { errorMissingKey: 'API Key eksik. Lütfen ayarlardan API Key giriniz.', errorInvalidUrl: 'Geçersiz API Base URL.', errorAuth: 'API Yetkilendirme hatası ({{provider}}). Lütfen API Key değerini kontrol ediniz.', errorQuota: 'Limit Hatası (429). Ücretsiz sürümde dakikada sadece 15 işlem yapılabilir. Lütfen 1 dakika bekleyip tekrar deneyin veya {{provider}} limitlerinizi kontrol edin.', errorNetwork: 'Bağlantı hatası (Failed to fetch). İnternetinizi, VPN durumunu veya URL adresini kontrol edin.', errorGeneric: 'API Hatası: {{status}} {{text}}', errorInvalidResponse: 'Geçersiz API yanıtı.', },
+    api: { errorMissingKey: 'API Key eksik. Lütfen ayarlardan API Key giriniz.', errorInvalidUrl: 'Geçersiz API Base URL.', errorSecureUrl: 'Özel API adresi HTTPS olmalı; yalnızca localhost için HTTP kullanılabilir.', permissionDenied: 'API sunucusu erişim izni verilmedi.', unsupportedHost: '{{host}} bu sürümün izin verilen API sunucuları arasında değil.', errorAuth: 'API Yetkilendirme hatası ({{provider}}). Lütfen API Key değerini kontrol ediniz.', errorQuota: 'Limit Hatası (429). Ücretsiz sürümde dakikada sadece 15 işlem yapılabilir. Lütfen 1 dakika bekleyip tekrar deneyin veya {{provider}} limitlerinizi kontrol edin.', errorNetwork: 'Bağlantı hatası (Failed to fetch). İnternetinizi, VPN durumunu veya URL adresini kontrol edin.', errorGeneric: 'API Hatası: {{status}} {{text}}', errorInvalidResponse: 'Geçersiz API yanıtı.', },
     cv: { errorEmpty: 'Lütfen CV metni girin.', errorApi: 'Hata: {{error}}' },
     ai: { systemPrompt: 'Sen kıdemli bir Upwork ilan analiz botusun. Kullanıcının yetenekleri: {{skills}}. Verilen ilanı oku. Sadece 3 kısa madde halinde, 50 kelimeyi geçmeyecek şekilde ilandaki en büyük riskleri ve kullanıcının yetenekleriyle uyuşup uyuşmadığını yaz. Asla gereksiz açıklama yapma. LÜTFEN CEVABINI KESİNLİKLE {{lang}} DİLİNDE VER!' },
     ui: {
@@ -29,12 +29,15 @@ const translations = {
       apiProvAuto: 'Otomatik Algıla (Auto-Detect)',
       apiProvOpenAI: 'OpenAI Resmi (sk-...)',
       apiProvGemini: 'Google Gemini (AIza... vb)',
+      apiProvGroq: 'Groq (gsk_... vb)',
       apiProvCustom: 'Özel Uyumlu (Custom URL)',
       aiError: 'Yapay Zeka Hatası',
       tourReplay: 'Ürün Turunu Tekrar Başlat',
 
-      tourWelcome: 'UpLens\\'e Hoş Geldiniz!',
+      tourWelcome: "UpLens'e Hoş Geldiniz!",
       tourLangSelect: 'Lütfen dilinizi seçin:',
+      tourStart: 'Turu Başlat',
+      tourSkipSetup: 'Şimdilik Atla',
       apiBaseUrl: 'API Base URL',
       apiModel: 'Model (Opsiyonel)',
       apiModelPlaceholder: 'Örn: gpt-4o-mini (Boş bırakırsanız otomatik bulur)',
@@ -64,6 +67,11 @@ const translations = {
       tabSettings: 'Ayarlar',
       emptyTitle: 'İlan Analizi Bekleniyor',
       emptyDesc: 'Upwork\'te bir iş ilanı sayfasına gidin. Eklenti otomatik olarak analiz edecek.',
+      emptyReady: 'Popup kullanıma hazır',
+      emptyStepOpen: 'Bir Upwork ilanı veya arama sayfası açın.',
+      emptyStepScore: 'UpLens yerel risk ve uyum puanını otomatik hesaplar.',
+      emptyStepReturn: 'Ayrıntılar, geçmiş ve isteğe bağlı AI analizi için buraya dönün.',
+      openUpworkJobs: 'Upwork ilanlarını aç',
       viewJob: 'İlanı Görüntüle',
       redFlags: 'Kırmızı Bayraklar',
       greenFlags: 'Olumlu Göstergeler',
@@ -75,7 +83,10 @@ const translations = {
       skillMatchPercent: '%{{percent}} Uyum',
       addSkillsHint: 'Ayarlardan becerilerinizi ekleyin',
       historyEmpty: 'Henüz analiz edilen ilan yok',
+      deleteHistory: 'Geçmiş kaydını sil',
       clearHistory: 'Geçmişi Temizle',
+      modelLoading: 'Modeller yükleniyor...',
+      developedBy: 'Geliştiren',
       untitledJob: 'İsimsiz İlan',
       yourSkills: 'Becerileriniz',
       addSkillPlaceholder: 'Beceri ekleyin (Enter ile)',
@@ -89,7 +100,8 @@ const translations = {
       language: 'Dil',
       saveSettings: 'Ayarları Kaydet',
       settingsSaved: 'Ayarlar kaydedildi!',
-      version: 'v1.0.0',
+      removeSkill: 'Yeteneği kaldır',
+      version: 'v1.0.2',
     },
     score: {
       highRisk: 'Yüksek Risk',
@@ -99,6 +111,7 @@ const translations = {
     },
     budget: {
       noInfo: 'Bütçe bilgisi belirtilmemiş',
+      searchInfoUnavailable: 'Bütçe ayrıntıları bu arama kartında görünmüyor',
       hourlyRange: 'Saatlik bütçe: ${{min}} – ${{max}}',
       fixedAmount: 'Sabit bütçe: ${{amount}}',
       belowMinHourly: 'Maksimum ücret (${{max}}), minimum beklentinizin (${{userMin}}) altında',
@@ -272,7 +285,7 @@ const translations = {
   // ENGLISH (en)
   // ═══════════════════════════════════════════════════════════════════════════
   en: {
-    api: { errorMissingKey: 'API Key missing. Please enter it in Settings.', errorInvalidUrl: 'Invalid API Base URL.', errorAuth: 'API Auth error ({{provider}}). Check your API Key.', errorQuota: 'API Quota Exceeded (429). Free tier is limited to 15 requests per minute. Please wait 1 minute and try again, or check your {{provider}} billing/limits.', errorNetwork: 'Network error (Failed to fetch). Check your connection, VPN, or if the API URL is correct.', errorGeneric: 'API Error: {{status}} {{text}}', errorInvalidResponse: 'Invalid API response.', },
+    api: { errorMissingKey: 'API Key missing. Please enter it in Settings.', errorInvalidUrl: 'Invalid API Base URL.', errorSecureUrl: 'Custom API URLs must use HTTPS; HTTP is allowed only for localhost.', permissionDenied: 'Permission to access the API server was not granted.', unsupportedHost: '{{host}} is not an allowed API host in this version.', errorAuth: 'API Auth error ({{provider}}). Check your API Key.', errorQuota: 'API Quota Exceeded (429). Free tier is limited to 15 requests per minute. Please wait 1 minute and try again, or check your {{provider}} billing/limits.', errorNetwork: 'Network error (Failed to fetch). Check your connection, VPN, or if the API URL is correct.', errorGeneric: 'API Error: {{status}} {{text}}', errorInvalidResponse: 'Invalid API response.', },
     cv: { errorEmpty: 'Please enter CV text.', errorApi: 'Error: {{error}}' },
     ai: { systemPrompt: 'You are a senior Upwork job analysis bot. User\'s skills: {{skills}}. Read the given job posting. Write the biggest risks and whether it matches the user\'s skills in exactly 3 short bullet points, not exceeding 50 words. Never provide unnecessary explanations. PLEASE RESPOND STRICTLY IN {{lang}}!' },
     ui: {
@@ -284,12 +297,15 @@ const translations = {
       apiProvAuto: 'Auto-Detect',
       apiProvOpenAI: 'Official OpenAI (sk-...)',
       apiProvGemini: 'Google Gemini (AIza... etc)',
+      apiProvGroq: 'Groq (gsk_...)',
       apiProvCustom: 'Custom Compatible URL',
       aiError: 'AI Error',
       tourReplay: 'Restart Product Tour',
 
       tourWelcome: 'Welcome to UpLens!',
       tourLangSelect: 'Please select your language:',
+      tourStart: 'Start Tour',
+      tourSkipSetup: 'Skip for now',
       apiBaseUrl: 'API Base URL',
       apiModel: 'Model (Optional)',
       apiModelPlaceholder: 'e.g., gpt-4o-mini (Leave empty to auto-detect)',
@@ -319,6 +335,11 @@ const translations = {
       tabSettings: 'Settings',
       emptyTitle: 'Waiting for Job Analysis',
       emptyDesc: 'Navigate to a job posting on Upwork. The extension will analyze it automatically.',
+      emptyReady: 'Popup is ready',
+      emptyStepOpen: 'Open an Upwork job or search page.',
+      emptyStepScore: 'UpLens calculates a local risk and fit score automatically.',
+      emptyStepReturn: 'Return here for details, history, and optional AI analysis.',
+      openUpworkJobs: 'Open Upwork jobs',
       viewJob: 'View Job',
       redFlags: 'Red Flags',
       greenFlags: 'Green Flags',
@@ -330,7 +351,10 @@ const translations = {
       skillMatchPercent: '{{percent}}% Match',
       addSkillsHint: 'Add your skills from Settings',
       historyEmpty: 'No analyzed jobs yet',
+      deleteHistory: 'Delete history item',
       clearHistory: 'Clear History',
+      modelLoading: 'Loading models...',
+      developedBy: 'Developed by',
       untitledJob: 'Untitled Job',
       yourSkills: 'Your Skills',
       addSkillPlaceholder: 'Add a skill (press Enter)',
@@ -344,7 +368,8 @@ const translations = {
       language: 'Language',
       saveSettings: 'Save Settings',
       settingsSaved: 'Settings saved!',
-      version: 'v1.0.0',
+      removeSkill: 'Remove skill',
+      version: 'v1.0.2',
     },
     score: {
       highRisk: 'High Risk',
@@ -354,6 +379,7 @@ const translations = {
     },
     budget: {
       noInfo: 'No budget information provided',
+      searchInfoUnavailable: 'Budget details are not visible on this search card',
       hourlyRange: 'Hourly budget: ${{min}} – ${{max}}',
       fixedAmount: 'Fixed budget: ${{amount}}',
       belowMinHourly: 'Maximum rate (${{max}}) is below your minimum (${{userMin}})',
@@ -527,18 +553,27 @@ const translations = {
   // GERMAN (de)
   // ═══════════════════════════════════════════════════════════════════════════
   de: {
-    api: { errorMissingKey: 'API-Schlüssel fehlt. Bitte in den Einstellungen eingeben.', errorInvalidUrl: 'Ungültige API-Basis-URL.', errorAuth: 'API-Authentifizierungsfehler. Bitte API-Schlüssel überprüfen.', errorQuota: 'API-Kontingent überschritten. Bitte {{provider}}-Guthaben überprüfen.', errorNetwork: 'Netzwerkfehler (Failed to fetch). Überprüfen Sie Ihre Verbindung, Ihr VPN oder die API-URL.', errorGeneric: 'API-Fehler: {{status}} {{text}}', errorInvalidResponse: 'Ungültige API-Antwort.', },
+    api: { errorMissingKey: 'API-Schlüssel fehlt. Bitte in den Einstellungen eingeben.', errorInvalidUrl: 'Ungültige API-Basis-URL.', errorSecureUrl: 'Benutzerdefinierte API-URLs müssen HTTPS verwenden; HTTP ist nur für localhost erlaubt.', permissionDenied: 'Der Zugriff auf den API-Server wurde nicht genehmigt.', unsupportedHost: '{{host}} ist in dieser Version kein erlaubter API-Host.', errorAuth: 'API-Authentifizierungsfehler bei {{provider}}. Bitte API-Schlüssel überprüfen.', errorQuota: 'API-Kontingent überschritten. Bitte {{provider}}-Guthaben überprüfen.', errorNetwork: 'Netzwerkfehler (Failed to fetch). Überprüfen Sie Ihre Verbindung, Ihr VPN oder die API-URL.', errorGeneric: 'API-Fehler: {{status}} {{text}}', errorInvalidResponse: 'Ungültige API-Antwort.', },
+    cv: { errorEmpty: 'Bitte geben Sie den Lebenslauftext ein.', errorApi: 'Fehler: {{error}}' },
+    ai: { systemPrompt: 'Du bist ein erfahrener Analyst für Upwork-Stellenanzeigen. Fähigkeiten des Nutzers: {{skills}}. Lies die Anzeige und nenne in höchstens 3 kurzen Punkten und 50 Wörtern die größten Risiken sowie die Übereinstimmung mit den Fähigkeiten. Antworte ausschließlich auf {{lang}}.' },
     ui: {
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      themeToggle: 'Design wechseln',
+      apiTrustMsg: '🔒 Ihr Schlüssel wird nur lokal in Ihrem Browser gespeichert. Den Open-Source-Code können Sie auf <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a> einsehen.',
+      tourStepPrivacy: 'UpLens ist vollständig quelloffen und speichert Ihren API-Schlüssel niemals auf eigenen Servern. Den gesamten Code können Sie auf GitHub prüfen.',
       scoreText: 'Score',
       apiProviderLabel: 'API-Anbieter',
       apiProvAuto: 'Automatisch erkennen',
       apiProvOpenAI: 'Offiziell OpenAI (sk-...)',
       apiProvGemini: 'Google Gemini',
+      apiProvGroq: 'Groq',
       apiProvCustom: 'Benutzerdefinierte URL',
       aiError: 'KI-Fehler',
       tourReplay: 'Produkttour neu starten',
+
+      tourWelcome: 'Willkommen bei UpLens!',
+      tourLangSelect: 'Bitte wählen Sie Ihre Sprache:',
+      tourStart: 'Tour starten',
+      tourSkipSetup: 'Vorerst überspringen',
 
       apiBaseUrl: 'API Base URL',
       apiModel: 'Modell (Optional)',
@@ -569,6 +604,11 @@ const translations = {
       tabSettings: 'Einstellungen',
       emptyTitle: 'Warte auf Stellenanalyse',
       emptyDesc: 'Navigieren Sie zu einer Stellenanzeige auf Upwork. Die Erweiterung analysiert sie automatisch.',
+      emptyReady: 'Popup ist einsatzbereit',
+      emptyStepOpen: 'Öffnen Sie einen Upwork-Job oder eine Suchseite.',
+      emptyStepScore: 'UpLens berechnet automatisch eine lokale Risiko- und Eignungsbewertung.',
+      emptyStepReturn: 'Kehren Sie für Details, Verlauf und optionale KI-Analyse hierher zurück.',
+      openUpworkJobs: 'Upwork-Jobs öffnen',
       viewJob: 'Stelle ansehen',
       redFlags: 'Warnsignale',
       greenFlags: 'Positive Indikatoren',
@@ -580,7 +620,10 @@ const translations = {
       skillMatchPercent: '{{percent}}% Übereinstimmung',
       addSkillsHint: 'Fügen Sie Ihre Skills in den Einstellungen hinzu',
       historyEmpty: 'Noch keine analysierten Jobs',
+      deleteHistory: 'Verlaufseintrag löschen',
       clearHistory: 'Verlauf löschen',
+      modelLoading: 'Modelle werden geladen...',
+      developedBy: 'Entwickelt von',
       untitledJob: 'Unbenannter Job',
       yourSkills: 'Ihre Fähigkeiten',
       addSkillPlaceholder: 'Skill hinzufügen (Enter drücken)',
@@ -594,7 +637,8 @@ const translations = {
       language: 'Sprache',
       saveSettings: 'Einstellungen speichern',
       settingsSaved: 'Einstellungen gespeichert!',
-      version: 'v1.0.0',
+      removeSkill: 'Fähigkeit entfernen',
+      version: 'v1.0.2',
     },
     score: {
       highRisk: 'Hohes Risiko',
@@ -604,6 +648,7 @@ const translations = {
     },
     budget: {
       noInfo: 'Keine Budgetinformationen angegeben',
+      searchInfoUnavailable: 'Budgetdetails sind auf dieser Suchkarte nicht sichtbar',
       hourlyRange: 'Stündliches Budget: ${{min}} – ${{max}}',
       fixedAmount: 'Festpreisbudget: ${{amount}}',
       belowMinHourly: 'Maximaler Satz (${{max}}) liegt unter Ihrem Minimum (${{userMin}})',
@@ -777,20 +822,27 @@ const translations = {
   // FRENCH (fr)
   // ═══════════════════════════════════════════════════════════════════════════
   fr: {
-    api: { errorMissingKey: 'Clé API manquante. Veuillez la saisir dans les paramètres.', errorInvalidUrl: 'URL de base de l\'API non valide.', errorAuth: 'Erreur d\'authentification API. Vérifiez votre clé API.', errorQuota: 'Quota API dépassé. Veuillez vérifier votre solde {{provider}}.', errorNetwork: 'Erreur réseau (Failed to fetch). Vérifiez votre connexion, VPN ou URL API.', errorGeneric: 'Erreur API : {{status}} {{text}}', errorInvalidResponse: 'Réponse API non valide.', },
+    api: { errorMissingKey: 'Clé API manquante. Veuillez la saisir dans les paramètres.', errorInvalidUrl: 'URL de base de l\'API non valide.', errorSecureUrl: 'Les URL d\'API personnalisées doivent utiliser HTTPS ; HTTP est autorisé uniquement pour localhost.', permissionDenied: 'L\'autorisation d\'accéder au serveur API n\'a pas été accordée.', unsupportedHost: '{{host}} n\'est pas un hôte API autorisé dans cette version.', errorAuth: 'Erreur d\'authentification API ({{provider}}). Vérifiez votre clé API.', errorQuota: 'Quota API dépassé. Veuillez vérifier votre solde {{provider}}.', errorNetwork: 'Erreur réseau (Failed to fetch). Vérifiez votre connexion, VPN ou URL API.', errorGeneric: 'Erreur API : {{status}} {{text}}', errorInvalidResponse: 'Réponse API non valide.', },
+    cv: { errorEmpty: 'Veuillez saisir le texte du CV.', errorApi: 'Erreur : {{error}}' },
+    ai: { systemPrompt: 'Vous êtes un analyste expérimenté des offres Upwork. Compétences de l\'utilisateur : {{skills}}. Lisez l\'offre et résumez en 3 points courts maximum et 50 mots les principaux risques et l\'adéquation avec les compétences. Répondez uniquement en {{lang}}.' },
     ui: {
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      themeToggle: 'Changer de thème',
+      apiTrustMsg: '🔒 Votre clé est stockée uniquement dans votre navigateur. Consultez le code open source sur <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens est entièrement open source et ne stocke jamais votre clé API sur ses propres serveurs. Vous pouvez vérifier tout le code sur GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'Fournisseur API',
       apiProvAuto: 'Détection automatique',
       apiProvOpenAI: 'OpenAI Officiel',
       apiProvGemini: 'Google Gemini',
+      apiProvGroq: 'Groq',
       apiProvCustom: 'URL personnalisée',
       aiError: 'Erreur IA',
       tourReplay: 'Redémarrer la visite du produit',
+
+      tourWelcome: 'Bienvenue sur UpLens !',
+      tourLangSelect: 'Veuillez sélectionner votre langue :',
+      tourStart: 'Démarrer la visite',
+      tourSkipSetup: 'Ignorer pour le moment',
 
       apiBaseUrl: 'URL de base de l\'API',
       apiModel: 'Modèle (Optionnel)',
@@ -821,6 +873,11 @@ const translations = {
       tabSettings: 'Paramètres',
       emptyTitle: 'En attente d\'analyse',
       emptyDesc: 'Accédez à une offre d\'emploi sur Upwork. L\'extension l\'analysera automatiquement.',
+      emptyReady: 'Le popup est prêt',
+      emptyStepOpen: 'Ouvrez une offre ou une page de recherche Upwork.',
+      emptyStepScore: 'UpLens calcule automatiquement un score local de risque et de compatibilité.',
+      emptyStepReturn: 'Revenez ici pour les détails, l\'historique et l\'analyse IA facultative.',
+      openUpworkJobs: 'Ouvrir les offres Upwork',
       viewJob: 'Voir l\'offre',
       redFlags: 'Signaux d\'alerte',
       greenFlags: 'Indicateurs positifs',
@@ -832,7 +889,11 @@ const translations = {
       skillMatchPercent: '{{percent}}% de correspondance',
       addSkillsHint: 'Ajoutez vos compétences depuis les Paramètres',
       historyEmpty: 'Aucune offre analysée pour l\'instant',
+      deleteHistory: 'Supprimer cet élément de l\'historique',
       clearHistory: 'Effacer l\'historique',
+      untitledJob: 'Offre sans titre',
+      modelLoading: 'Chargement des modèles...',
+      developedBy: 'Développé par',
       yourSkills: 'Vos compétences',
       addSkillPlaceholder: 'Ajouter une compétence (Entrée)',
       addSkillHint: 'Appuyez sur Entrée ou virgule pour ajouter',
@@ -845,7 +906,8 @@ const translations = {
       language: 'Langue',
       saveSettings: 'Enregistrer les paramètres',
       settingsSaved: 'Paramètres enregistrés !',
-      version: 'v1.0.0',
+      removeSkill: 'Supprimer la compétence',
+      version: 'v1.0.2',
     },
     score: {
       highRisk: 'Risque élevé',
@@ -855,6 +917,7 @@ const translations = {
     },
     budget: {
       noInfo: 'Aucune information budgétaire fournie',
+      searchInfoUnavailable: 'Les détails du budget ne sont pas visibles sur cette carte de recherche',
       hourlyRange: 'Budget horaire : ${{min}} – ${{max}}',
       fixedAmount: 'Budget fixe : ${{amount}}',
       belowMinHourly: 'Le taux maximum (${{max}}) est inférieur à votre minimum (${{userMin}})',
@@ -1028,18 +1091,27 @@ const translations = {
   // SPANISH (es)
   // ═══════════════════════════════════════════════════════════════════════════
   es: {
-    api: { errorMissingKey: 'Falta la clave API. Introdúzcala en Configuración.', errorInvalidUrl: 'URL base de API no válida.', errorAuth: 'Error de autenticación de API. Compruebe su clave API.', errorQuota: 'Cuota de API excedida. Compruebe su saldo/créditos de {{provider}}.', errorNetwork: 'Error de red (Failed to fetch). Compruebe su conexión, VPN o si la URL de la API es correcta.', errorGeneric: 'Error de API: {{status}} {{text}}', errorInvalidResponse: 'Respuesta de API no válida.', },
+    api: { errorMissingKey: 'Falta la clave API. Introdúzcala en Configuración.', errorInvalidUrl: 'URL base de API no válida.', errorSecureUrl: 'Las URL de API personalizadas deben usar HTTPS; HTTP solo se permite para localhost.', permissionDenied: 'No se concedió permiso para acceder al servidor API.', unsupportedHost: '{{host}} no es un host de API permitido en esta versión.', errorAuth: 'Error de autenticación de API ({{provider}}). Compruebe su clave API.', errorQuota: 'Cuota de API excedida. Compruebe su saldo/créditos de {{provider}}.', errorNetwork: 'Error de red (Failed to fetch). Compruebe su conexión, VPN o si la URL de la API es correcta.', errorGeneric: 'Error de API: {{status}} {{text}}', errorInvalidResponse: 'Respuesta de API no válida.', },
+    cv: { errorEmpty: 'Introduce el texto del CV.', errorApi: 'Error: {{error}}' },
+    ai: { systemPrompt: 'Eres un analista experto de ofertas de Upwork. Habilidades del usuario: {{skills}}. Lee la oferta y resume en un máximo de 3 puntos breves y 50 palabras los principales riesgos y la compatibilidad con sus habilidades. Responde únicamente en {{lang}}.' },
     ui: {
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      themeToggle: 'Cambiar tema',
+      apiTrustMsg: '🔒 Tu clave se guarda únicamente en tu navegador. Consulta el código abierto en <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens es completamente de código abierto y nunca guarda tu clave API en servidores propios. Puedes revisar todo el código en GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'Proveedor de API',
       apiProvAuto: 'Detección automática',
       apiProvOpenAI: 'OpenAI Oficial',
       apiProvGemini: 'Google Gemini',
+      apiProvGroq: 'Groq',
       apiProvCustom: 'URL personalizada',
       aiError: 'Error de IA',
       tourReplay: 'Reiniciar el recorrido del producto',
+
+      tourWelcome: '¡Bienvenido a UpLens!',
+      tourLangSelect: 'Selecciona tu idioma:',
+      tourStart: 'Iniciar recorrido',
+      tourSkipSetup: 'Omitir por ahora',
 
       apiBaseUrl: 'URL base de la API',
       apiModel: 'Modelo (Opcional)',
@@ -1070,6 +1142,11 @@ const translations = {
       tabSettings: 'Ajustes',
       emptyTitle: 'Esperando análisis de oferta',
       emptyDesc: 'Navega a una oferta de empleo en Upwork. La extensión la analizará automáticamente.',
+      emptyReady: 'El popup está listo',
+      emptyStepOpen: 'Abre una oferta o una página de búsqueda de Upwork.',
+      emptyStepScore: 'UpLens calcula automáticamente una puntuación local de riesgo y compatibilidad.',
+      emptyStepReturn: 'Vuelve aquí para ver detalles, historial y análisis de IA opcional.',
+      openUpworkJobs: 'Abrir ofertas de Upwork',
       viewJob: 'Ver oferta',
       redFlags: 'Señales de alerta',
       greenFlags: 'Indicadores positivos',
@@ -1081,7 +1158,11 @@ const translations = {
       skillMatchPercent: '{{percent}}% de coincidencia',
       addSkillsHint: 'Añade tus habilidades desde Ajustes',
       historyEmpty: 'No hay ofertas analizadas todavía',
+      deleteHistory: 'Eliminar elemento del historial',
       clearHistory: 'Borrar historial',
+      untitledJob: 'Oferta sin título',
+      modelLoading: 'Cargando modelos...',
+      developedBy: 'Desarrollado por',
       yourSkills: 'Tus habilidades',
       addSkillPlaceholder: 'Añadir habilidad (Enter)',
       addSkillHint: 'Pulsa Enter o coma para añadir',
@@ -1094,7 +1175,8 @@ const translations = {
       language: 'Idioma',
       saveSettings: 'Guardar ajustes',
       settingsSaved: '¡Ajustes guardados!',
-      version: 'v1.0.0',
+      removeSkill: 'Eliminar habilidad',
+      version: 'v1.0.2',
     },
     score: {
       highRisk: 'Alto riesgo',
@@ -1104,6 +1186,7 @@ const translations = {
     },
     budget: {
       noInfo: 'No se proporcionó información de presupuesto',
+      searchInfoUnavailable: 'Los detalles del presupuesto no aparecen en esta tarjeta de búsqueda',
       hourlyRange: 'Presupuesto por hora: ${{min}} – ${{max}}',
       fixedAmount: 'Presupuesto fijo: ${{amount}}',
       belowMinHourly: 'La tarifa máxima (${{max}}) está por debajo de tu mínimo (${{userMin}})',
@@ -1277,20 +1360,27 @@ const translations = {
   // PORTUGUESE (pt)
   // ═══════════════════════════════════════════════════════════════════════════
   pt: {
-    api: { errorMissingKey: 'Chave API ausente. Insira-a nas Configurações.', errorInvalidUrl: 'URL base da API inválido.', errorAuth: 'Erro de autenticação da API. Verifique sua chave API.', errorQuota: 'Cota da API excedida. Verifique seu saldo da {{provider}}.', errorNetwork: 'Erro de rede (Failed to fetch). Verifique sua conexão, VPN ou a URL da API.', errorGeneric: 'Erro da API: {{status}} {{text}}', errorInvalidResponse: 'Resposta da API inválida.', },
+    api: { errorMissingKey: 'Chave API ausente. Insira-a nas Configurações.', errorInvalidUrl: 'URL base da API inválido.', errorSecureUrl: 'URLs de API personalizadas devem usar HTTPS; HTTP é permitido apenas para localhost.', permissionDenied: 'A permissão para acessar o servidor da API não foi concedida.', unsupportedHost: '{{host}} não é um host de API permitido nesta versão.', errorAuth: 'Erro de autenticação da API ({{provider}}). Verifique sua chave API.', errorQuota: 'Cota da API excedida. Verifique seu saldo da {{provider}}.', errorNetwork: 'Erro de rede (Failed to fetch). Verifique sua conexão, VPN ou a URL da API.', errorGeneric: 'Erro da API: {{status}} {{text}}', errorInvalidResponse: 'Resposta da API inválida.', },
+    cv: { errorEmpty: 'Insira o texto do currículo.', errorApi: 'Erro: {{error}}' },
+    ai: { systemPrompt: 'Você é um analista experiente de vagas do Upwork. Habilidades do usuário: {{skills}}. Leia a vaga e resuma em no máximo 3 tópicos curtos e 50 palavras os principais riscos e a compatibilidade com as habilidades. Responda somente em {{lang}}.' },
     ui: {
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      themeToggle: 'Alternar tema',
+      apiTrustMsg: '🔒 Sua chave é armazenada apenas no navegador. Consulte o código aberto no <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'O UpLens é totalmente open source e nunca armazena sua chave API em servidores próprios. Você pode revisar todo o código no GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'Provedor de API',
       apiProvAuto: 'Detectar automaticamente',
       apiProvOpenAI: 'OpenAI Oficial',
       apiProvGemini: 'Google Gemini',
+      apiProvGroq: 'Groq',
       apiProvCustom: 'URL personalizada',
       aiError: 'Erro de IA',
       tourReplay: 'Reiniciar o tour do produto',
+
+      tourWelcome: 'Bem-vindo ao UpLens!',
+      tourLangSelect: 'Selecione seu idioma:',
+      tourStart: 'Iniciar tour',
+      tourSkipSetup: 'Pular por enquanto',
 
       apiBaseUrl: 'URL base da API',
       apiModel: 'Modelo (Opcional)',
@@ -1321,6 +1411,11 @@ const translations = {
       tabSettings: 'Configurações',
       emptyTitle: 'Aguardando análise de vaga',
       emptyDesc: 'Navegue até uma vaga no Upwork. A extensão irá analisá-la automaticamente.',
+      emptyReady: 'O popup está pronto',
+      emptyStepOpen: 'Abra uma vaga ou página de pesquisa do Upwork.',
+      emptyStepScore: 'O UpLens calcula automaticamente uma pontuação local de risco e compatibilidade.',
+      emptyStepReturn: 'Volte aqui para detalhes, histórico e análise opcional por IA.',
+      openUpworkJobs: 'Abrir vagas do Upwork',
       viewJob: 'Ver vaga',
       redFlags: 'Sinais de alerta',
       greenFlags: 'Indicadores positivos',
@@ -1332,7 +1427,11 @@ const translations = {
       skillMatchPercent: '{{percent}}% de correspondência',
       addSkillsHint: 'Adicione suas habilidades nas Configurações',
       historyEmpty: 'Nenhuma vaga analisada ainda',
+      deleteHistory: 'Excluir item do histórico',
       clearHistory: 'Limpar histórico',
+      untitledJob: 'Vaga sem título',
+      modelLoading: 'Carregando modelos...',
+      developedBy: 'Desenvolvido por',
       yourSkills: 'Suas habilidades',
       addSkillPlaceholder: 'Adicionar habilidade (Enter)',
       addSkillHint: 'Pressione Enter ou vírgula para adicionar',
@@ -1345,7 +1444,8 @@ const translations = {
       language: 'Idioma',
       saveSettings: 'Salvar configurações',
       settingsSaved: 'Configurações salvas!',
-      version: 'v1.0.0',
+      removeSkill: 'Remover habilidade',
+      version: 'v1.0.2',
     },
     score: {
       highRisk: 'Alto risco',
@@ -1355,6 +1455,7 @@ const translations = {
     },
     budget: {
       noInfo: 'Nenhuma informação de orçamento fornecida',
+      searchInfoUnavailable: 'Os detalhes do orçamento não aparecem neste cartão de pesquisa',
       hourlyRange: 'Orçamento por hora: ${{min}} – ${{max}}',
       fixedAmount: 'Orçamento fixo: ${{amount}}',
       belowMinHourly: 'A taxa máxima (${{max}}) está abaixo do seu mínimo (${{userMin}})',
@@ -1528,22 +1629,27 @@ const translations = {
   // ARABIC (ar)
   // ═══════════════════════════════════════════════════════════════════════════
   ar: {
-    api: { errorMissingKey: 'مفتاح API مفقود. يرجى إدخاله في الإعدادات.', errorInvalidUrl: 'عنوان URL الأساسي لـ API غير صالح.', errorAuth: 'خطأ في مصادقة API. تحقق من مفتاح API.', errorQuota: 'تجاوزت حصة API. يرجى التحقق من رصيد {{provider}}.', errorNetwork: 'خطأ في الشبكة (Failed to fetch). تحقق من الاتصال أو VPN أو عنوان URL.', errorGeneric: 'خطأ API: {{status}} {{text}}', errorInvalidResponse: 'استجابة API غير صالحة.', },
+    api: { errorMissingKey: 'مفتاح API مفقود. يرجى إدخاله في الإعدادات.', errorInvalidUrl: 'عنوان URL الأساسي لـ API غير صالح.', errorSecureUrl: 'يجب أن تستخدم عناوين API المخصصة HTTPS؛ يُسمح بـ HTTP فقط لـ localhost.', permissionDenied: 'لم يتم منح إذن الوصول إلى خادم API.', unsupportedHost: '{{host}} ليس مضيف API مسموحًا به في هذا الإصدار.', errorAuth: 'خطأ في مصادقة API لدى {{provider}}. تحقق من مفتاح API.', errorQuota: 'تجاوزت حصة API. يرجى التحقق من رصيد {{provider}}.', errorNetwork: 'خطأ في الشبكة (Failed to fetch). تحقق من الاتصال أو VPN أو عنوان URL.', errorGeneric: 'خطأ API: {{status}} {{text}}', errorInvalidResponse: 'استجابة API غير صالحة.', },
+    cv: { errorEmpty: 'يرجى إدخال نص السيرة الذاتية.', errorApi: 'خطأ: {{error}}' },
+    ai: { systemPrompt: 'أنت محلل خبير لإعلانات وظائف Upwork. مهارات المستخدم: {{skills}}. اقرأ الإعلان ولخّص في 3 نقاط قصيرة كحد أقصى و50 كلمة أهم المخاطر ومدى توافقه مع المهارات. أجب باللغة {{lang}} فقط.' },
     ui: {
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
-      apiTrustMsg: '🔒 Your key is stored locally in your browser. View our open-source code on <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
-      tourStepPrivacy: 'UpLens is 100% Open Source and never stores your API key on servers. You can transparently review all our code on GitHub.',
+      themeToggle: 'تبديل المظهر',
+      apiTrustMsg: '🔒 يُخزَّن مفتاحك داخل متصفحك فقط. يمكنك مراجعة الكود المفتوح المصدر على <a href="https://github.com/AybarsOnurlu/Uplens" target="_blank" class="underline text-emerald-400 hover:text-emerald-300">GitHub</a>.',
+      tourStepPrivacy: 'UpLens مفتوح المصدر بالكامل ولا يخزن مفتاح API على خوادم خاصة به. يمكنك مراجعة الكود كاملًا على GitHub.',
       scoreText: 'Score',
       apiProviderLabel: 'مزود API',
       apiProvAuto: 'اكتشاف تلقائي',
       apiProvOpenAI: 'OpenAI رسمي',
       apiProvGemini: 'Google Gemini',
+      apiProvGroq: 'Groq',
       apiProvCustom: 'رابط مخصص',
       aiError: 'خطأ في الذكاء الاصطناعي',
       tourReplay: 'إعادة تشغيل جولة المنتج',
+
+      tourWelcome: 'مرحبًا بك في UpLens!',
+      tourLangSelect: 'يرجى اختيار لغتك:',
+      tourStart: 'بدء الجولة',
+      tourSkipSetup: 'تخطي الآن',
 
       apiBaseUrl: 'عنوان URL الأساسي لواجهة برمجة التطبيقات',
       apiModel: 'النموذج (اختياري)',
@@ -1574,6 +1680,11 @@ const translations = {
       tabSettings: 'الإعدادات',
       emptyTitle: 'بانتظار تحليل الوظيفة',
       emptyDesc: 'انتقل إلى صفحة إعلان وظيفة على Upwork. سيقوم الامتداد بتحليلها تلقائيًا.',
+      emptyReady: 'النافذة المنبثقة جاهزة',
+      emptyStepOpen: 'افتح إعلان وظيفة أو صفحة بحث على Upwork.',
+      emptyStepScore: 'يحسب UpLens تلقائيًا درجة محلية للمخاطر والتوافق.',
+      emptyStepReturn: 'عُد هنا للتفاصيل والسجل وتحليل الذكاء الاصطناعي الاختياري.',
+      openUpworkJobs: 'فتح وظائف Upwork',
       viewJob: 'عرض الوظيفة',
       redFlags: 'إشارات تحذيرية',
       greenFlags: 'مؤشرات إيجابية',
@@ -1585,7 +1696,11 @@ const translations = {
       skillMatchPercent: '{{percent}}% تطابق',
       addSkillsHint: 'أضف مهاراتك من الإعدادات',
       historyEmpty: 'لا توجد وظائف محللة بعد',
+      deleteHistory: 'حذف عنصر السجل',
       clearHistory: 'مسح السجل',
+      untitledJob: 'وظيفة بلا عنوان',
+      modelLoading: 'جارٍ تحميل النماذج...',
+      developedBy: 'طوّره',
       yourSkills: 'مهاراتك',
       addSkillPlaceholder: 'أضف مهارة (اضغط Enter)',
       addSkillHint: 'اضغط Enter أو فاصلة للإضافة',
@@ -1598,7 +1713,8 @@ const translations = {
       language: 'اللغة',
       saveSettings: 'حفظ الإعدادات',
       settingsSaved: 'تم حفظ الإعدادات!',
-      version: 'v1.0.0',
+      removeSkill: 'إزالة المهارة',
+      version: 'v1.0.2',
     },
     score: {
       highRisk: 'مخاطر عالية',
@@ -1608,6 +1724,7 @@ const translations = {
     },
     budget: {
       noInfo: 'لم يتم تحديد معلومات الميزانية',
+      searchInfoUnavailable: 'تفاصيل الميزانية غير ظاهرة في بطاقة البحث هذه',
       hourlyRange: 'الميزانية بالساعة: ${{min}} – ${{max}}',
       fixedAmount: 'الميزانية الثابتة: ${{amount}}',
       belowMinHourly: 'الحد الأقصى للأجر (${{max}}) أقل من الحد الأدنى المتوقع (${{userMin}})',
@@ -1793,8 +1910,8 @@ function resolve(obj, key) {
  * @returns {string} Translated string (falls back to English, then returns the key itself)
  */
 export function t(key, params) {
-  let value = resolve(translations[currentLanguage], key)
-    ?? resolve(translations.en, key)
+  let value = resolve(TRANSLATIONS[currentLanguage], key)
+    ?? resolve(TRANSLATIONS.en, key)
     ?? key;
 
   if (params && typeof value === 'string') {
@@ -1811,7 +1928,7 @@ export function t(key, params) {
  * @param {string} langCode  One of the keys in LANGUAGES
  */
 export function setLanguage(langCode) {
-  if (translations[langCode]) {
+  if (TRANSLATIONS[langCode]) {
     currentLanguage = langCode;
   }
 }
