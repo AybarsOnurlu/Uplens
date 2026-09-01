@@ -1,8 +1,8 @@
 # Privacy Policy for UpLens
 
-**Last Updated:** August 8, 2026
+**Last Updated:** September 1, 2026
 
-Welcome to UpLens! Your privacy is incredibly important to us. We built this extension to be 100% open-source and privacy-first. This policy explains what data we handle and how it is protected.
+UpLens is an open-source, privacy-focused extension. This policy explains what data the extension handles, where that data is stored, and when data may be sent to a third-party service selected by the user.
 
 ## 1. Data We Handle
 UpLens does not operate an analytics or user-data server and does not maintain a user database. The extension does handle data required for its user-facing features: visible Upwork job content, skills or CV text you provide, API credentials you provide, analysis results, and interface preferences.
@@ -10,21 +10,21 @@ UpLens does not operate an analytics or user-data server and does not maintain a
 UpLens does not sell data, use it for advertising, or monitor websites outside the Upwork pages declared in the extension manifest.
 
 ## 2. Local Storage
-All data required for the extension to function is stored **locally** on your device using your browser's secure local storage (`chrome.storage.local`). This includes:
-* **API Credentials:** Credentials for the AI provider you choose.
+Persistent extension data is stored **locally** on your device using `chrome.storage.local`. Data is sent off-device only when you explicitly use an optional AI feature, as described in Section 3. Locally stored data includes:
+* **API Credentials:** Credentials you enter for the AI provider you choose.
 * **Your Skills:** The skills you define in the settings or extract from your CV.
-* **Analysis History:** The job postings you have analyzed and their AI verdicts.
+* **Analysis History:** The job postings you have analyzed and their analysis results.
 * **Preferences:** UI settings such as theme and language.
 
-Because this data is stored locally, **we have no access to it.**
+The developer does not operate a server that receives or can access this locally stored data. When you explicitly use an optional AI feature, the selected provider receives only the request data described below.
 
 ## 3. Optional Third-Party AI Services
-Local heuristic scoring does not require an AI provider. If you enable AI analysis or CV skill extraction, UpLens sends the data needed for that request to the provider you selected (for example OpenAI, Google Gemini, Groq, or a supported OpenAI-compatible endpoint).
+Local heuristic scoring does not require an AI provider. If you configure and invoke AI analysis or CV skill extraction, UpLens sends the data needed for that request to the provider you selected (for example OpenAI, Google Gemini, Groq, or a supported OpenAI-compatible endpoint).
 
 For job analysis, this can include the job title, job description, and your locally saved skills. For CV skill extraction, it includes the CV text you submit.
 * This data is transmitted directly from your browser to the chosen API provider.
 * It does not pass through any intermediate servers owned by us.
-* Chrome requests access to the selected API host when you configure it.
+* Chrome requests access to the selected API host when you save or use that provider configuration.
 * The selected provider's privacy policy and account terms govern its handling of the request.
 
 ## 4. Website Content
